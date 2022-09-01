@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="MC_MoveAbsoluteTimeCA" Id="{7932120b-afe8-4c2c-a2e8-6e452cfb5810}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MC_MoveAbsoluteTimeCA 
+VAR_IN_OUT
+	Axis					: AXIS_REF; 
+END_VAR
+VAR_INPUT
+	bExecute				: BOOL;
+	lrPosition 				: LREAL;
+	lrTime 					: LREAL;
+END_VAR
+VAR_OUTPUT
+	Done					: BOOL;		 
+	Busy 					: BOOL;
+	Active					: BOOL;
+	CommandAborted 			: BOOL;
+	Error					: BOOL;
+	ErrorId					: UDINT;	
+END_VAR
+VAR
+	iState					: INT;
+	lrDistance				: LREAL;
+	fbReadParamSet			: MC_ReadParameterSet := (Execute := TRUE);
+	stParameter				: ST_AxisParameterSet;
+	fbMoveAbsoluteCA		: MC_MoveAbsoluteCA;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+CASE iState OF
+	
+	0 : IF bExecute THEN iState := iState + 1; END_IF
+	
+	1 :
+		fbReadParamSet(Parameter := stParameter, Axis := Axis, Execute := TRUE);
+		IF fbReadParamSet.Done THEN
+			iState := iState + 1;
+		END_IF
+	2 :
+		lrDistance := Tc2_Math.LMOD(lrPosition - axis.NcToPlc.ModuloSetPos + stParameter.fEncModuloFactor, stParameter.fEncModuloFactor);
+		IF ABS(lrDistance) < 0.5 OR ABS(lrDistance-stParameter.fEncModuloFactor) < 0.5 THEN
+			Done := TRUE;
+			IF bExecute = FALSE THEN 
+				fbMoveAbsoluteCA.Execute := FALSE;
+				Done := FALSE;
+				iState := 0; 
+			END_IF
+		ELSE 
+			IF lrDistance < 0 THEN lrDistance := lrDistance + stParameter.fEncModuloFactor; END_IF
+			fbMoveAbsoluteCA.Position		:= lrPosition;
+			fbMoveAbsoluteCA.Velocity 		:= (lrDistance * 2.0) / lrTime;
+			fbMoveAbsoluteCA.Acceleration 	:= (fbMoveAbsoluteCA.Velocity * 4.0) / lrTime;
+			fbMoveAbsoluteCA.Deceleration 	:= (fbMoveAbsoluteCA.Velocity * 4.0) / lrTime;
+			fbMoveAbsoluteCA.Jerk			:= (fbMoveAbsoluteCA.Acceleration * 4.0) / lrTime;
+			fbMoveAbsoluteCA.Direction		:= tc3_mc3Definitions.MC_DIRECTION.mcDirectionPositive;
+			iState := iState + 1;
+		END_IF
+		
+	3 : //Execute
+		fbMoveAbsoluteCA.Execute := TRUE;
+		Done := fbMoveAbsoluteCA.Done;
+		IF bExecute = FALSE THEN 
+			fbMoveAbsoluteCA.Execute := FALSE;
+			Done := FALSE;
+			iState := 0; 
+		END_IF
+	
+END_CASE
+
+fbMoveAbsoluteCA(
+	Axis:= Axis, 
+	Execute:= , 
+	ContinuousUpdate:= , 
+	Position:= , 
+	Velocity:= , 
+	Acceleration:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Gap:= , 
+	BufferMode:= , 
+	Direction:= , 
+	Options:= , 
+	Done=> , 
+	Busy=> Busy, 
+	Active=> Active, 
+	CommandAborted=> CommandAborted, 
+	Error=> Error, 
+	ErrorId=> ErrorId);
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

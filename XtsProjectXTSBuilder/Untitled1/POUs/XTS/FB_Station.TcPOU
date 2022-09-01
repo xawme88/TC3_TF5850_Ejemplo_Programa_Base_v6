@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="FB_Station" Id="{044dcdb0-796d-4bda-a3b7-df20cd71aff3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Station
+VAR_IN_OUT
+	 //ax						: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF FB_Mover;	//Movers
+END_VAR
+VAR_INPUT
+	stCfg 					: stStationCfg;
+	udiNumMovers			: UDINT;		//Number of Movers into the system
+	lrPartLength			: LREAL;
+	bInvertPolarity			: BOOL;
+END_VAR
+VAR_OUTPUT
+	udiNumMoversIn			: UDINT;		//Number of Movers into station
+END_VAR
+VAR
+	
+END_VAR
+VAR CONSTANT
+	START_POSITION_ON_PART_STATION 	: DWORD := 16#03080272;
+	END_POSITION_ON_PART_STATION 	: DWORD := 16#03080273;
+	STOP_POSITIONS_STATION 			: DWORD := 16#0308028D;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Sequence1" Id="{094ad280-bbb4-43e1-823e-5d126e94065e}">
+      <Declaration><![CDATA[METHOD Sequence1 : BOOL
+VAR_INPUT
+	bExecute : BOOL;
+END_VAR
+VAR_OUTPUT
+	bBusy	: BOOL;
+	bError	: BOOL;
+	bErrorID: BOOL;
+END_VAR
+VAR_INST
+	iState 	: INT;
+	m_bBusy	: BOOL;
+	i		: UDINT;
+	fbTON	: TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bExecute = FALSE THEN iState := 0; END_IF
+CASE iState OF
+	0 :
+		IF bExecute THEN
+			fbTON(IN := FALSE);
+			iState := iState + 10;
+		END_IF
+
+	10 : //Check for movers between previous station position and start position
+		 fbTON(IN := TRUE, PT := REAL_TO_TIME(stCfg.lrProcessingTime*1000.0));
+		IF fbTON.Q THEN
+			iState := iState + 10;
+		END_IF
+		
+	20 : //Done
+		Sequence1 := TRUE;
+		IF bExecute = FALSE THEN
+			iState := 0;
+		END_IF
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetStationInfo" Id="{864b431a-7d13-4073-a027-d3c853e0124b}">
+      <Declaration><![CDATA[METHOD SetStationInfo : BOOL
+VAR_INPUT
+	bExecute		: BOOL;
+	OTCID			: DWORD;
+END_VAR
+VAR_INST
+	iState 	 		: INT;
+	fbADSWrite 		: adswrite;
+	lrStartPos		: LREAL;
+	lrEndPos		: LREAL;
+	aStopPos		: ARRAY [1..3] OF LREAL;
+	lrTmp			: LREAL;
+	aTmp			: ARRAY [1..3] OF LREAL;
+	lrDistance		: LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+CASE iState OF
+	0 : 
+		IF bExecute THEN
+			fbADSWrite(WRITE:= FALSE);
+			iState 	:= iState + 1;
+		END_IF
+	
+	1 : //Write Init position
+		lrStartPos 	:= SEL(bInvertPolarity, stCfg.lrStartPosition, lrPartLength - stCfg.lrEndPosition);
+		lrEndPos 	:= SEL(bInvertPolarity, stCfg.lrEndPosition, lrPartLength - stCfg.lrStartPosition);
+		fbADSWrite(
+			NETID:= , 
+			PORT:= 350, 
+			IDXGRP:= OTCID, 
+			IDXOFFS:= START_POSITION_ON_PART_STATION, 
+			LEN:= SIZEOF(lrStartPos), 
+			SRCADDR:= ADR(lrStartPos), 
+			WRITE:= TRUE, 
+			TMOUT:= , 
+			BUSY=> , 
+			ERR=> , 
+			ERRID=> );
+	
+		IF fbADSWrite.BUSY = FALSE AND fbADSWrite.ERR = FALSE THEN
+			fbADSWrite(WRITE := FALSE);
+			iState := iState + 1;
+		END_IF	
+			
+	2 : //Write End Position
+		fbADSWrite(
+			NETID:= , 
+			PORT:= 350, 
+			IDXGRP:= OTCID, 
+			IDXOFFS:= END_POSITION_ON_PART_STATION, 
+			LEN:= SIZEOF(lrEndPos), 
+			SRCADDR:= ADR(lrEndPos), 
+			WRITE:= TRUE, 
+			TMOUT:= , 
+			BUSY=> , 
+			ERR=> , 
+			ERRID=> );
+	
+		IF fbADSWrite.BUSY = FALSE AND fbADSWrite.ERR = FALSE THEN
+			fbADSWrite(WRITE := FALSE);
+			iState := iState + 1;
+		END_IF
+		
+	3 : //Write Stop Positions
+		aStopPos[1] := SEL(bInvertPolarity, stCfg.lrStopPosition[1], (stCfg.lrEndPosition - stCfg.lrStartPosition) - stCfg.lrStopPosition[1]); 
+		aStopPos[2] := SEL(bInvertPolarity, stCfg.lrStopPosition[2], (stCfg.lrEndPosition - stCfg.lrStartPosition) - stCfg.lrStopPosition[2]); 
+		aStopPos[3] := SEL(bInvertPolarity, stCfg.lrStopPosition[3], (stCfg.lrEndPosition - stCfg.lrStartPosition) - stCfg.lrStopPosition[3]); 
+		IF stCfg.uiNumStopPositions = 1 THEN
+			aTmp[1] := aStopPos[1];
+			aTmp[2] := aStopPos[1];
+			aTmp[3] := aStopPos[1];
+		ELSIF stCfg.uiNumStopPositions = 2 THEN
+			aTmp[1] := SEL(bInvertPolarity, aStopPos[1], aStopPos[2]);
+			aTmp[2] := SEL(bInvertPolarity, aStopPos[2], aStopPos[1]);
+			aTmp[3] := SEL(bInvertPolarity, aStopPos[2], aStopPos[1]);
+		ELSIF stCfg.uiNumStopPositions = 3 THEN
+			aTmp[1] := SEL(bInvertPolarity, aStopPos[1], aStopPos[3]);
+			aTmp[2] := SEL(bInvertPolarity, aStopPos[2], aStopPos[2]);
+			aTmp[3] := SEL(bInvertPolarity, aStopPos[3], aStopPos[1]);
+		ELSE
+			aTmp[1]	:= 0.0;
+			aTmp[2] := 0.0;
+			aTmp[3] := 0.0;
+		END_IF
+		fbADSWrite(
+			NETID:= , 
+			PORT:= 350, 
+			IDXGRP:= OTCID, 
+			IDXOFFS:= STOP_POSITIONS_STATION, 
+			LEN:= SIZEOF(aTmp), 
+			SRCADDR:= ADR(aTmp), 
+			WRITE:= TRUE, 
+			TMOUT:= , 
+			BUSY=> , 
+			ERR=> , 
+			ERRID=> );
+	
+		IF fbADSWrite.BUSY = FALSE AND fbADSWrite.ERR = FALSE THEN
+			fbADSWrite(WRITE := FALSE);
+			iState := iState + 1;
+		END_IF
+		
+	4 : //Job Done
+		SetStationInfo := TRUE;
+		IF bExecute = FALSE THEN
+			iState := 0;
+		END_IF
+	
+END_CASE
+
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

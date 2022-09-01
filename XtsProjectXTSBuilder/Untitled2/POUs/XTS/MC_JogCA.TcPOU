@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="MC_JogCA" Id="{224e2e8a-a515-42fa-9ed7-ad741da405f2}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MC_JogCA EXTENDS MC_Jog
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	fbMoveRelativeCA 	: MC_MoveRelativeCA;
+	fbHaltCA 			: MC_HaltCA;
+	fbReadParameterSet	: MC_ReadParameterSet;
+	stParameters		: st_axisparameterset;
+	Old_bJogForward		: BOOL;
+	Old_bJogBackwards	: BOOL;
+	nState				: (IDLE, STARTING, EXECUTE, STOPPING, RESETING, ABORTED);
+	bBackwards			: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+CASE nState OF
+	
+	IDLE://
+		IF JogForward AND Old_bJogForward = FALSE THEN nState := RESETING; bBackwards := FALSE; Busy := TRUE; END_IF
+		IF JogBackwards AND Old_bJogBackwards = FALSE THEN nState := RESETING; bBackwards := TRUE; Busy := TRUE; END_IF
+		IF JogForward = FALSE AND JogBackwards = FALSE THEN Done := FALSE; END_IF
+		
+	RESETING:
+		fbReadParameterSet(Parameter := stParameters, Axis := Axis, Execute := FALSE); 
+		fbMoveRelativeCA(Axis := Axis, Execute := FALSE);	
+		fbHaltCA(Axis := Axis, Execute := FALSE);
+		nState := STARTING;
+		
+	STARTING:
+	
+		CASE Mode OF
+			E_JogMode.MC_JOGMODE_CONTINOUS:
+				fbReadParameterSet(Parameter := stParameters, Axis := Axis, Execute := TRUE, Error => Error, ErrorID => ErrorID); 
+				fbMoveRelativeCA.Distance  	:= SEL(bBackwards, stParameters.fEncModuloFactor, -stParameters.fEncModuloFactor);
+				fbMoveRelativeCA.Velocity	:= Velocity;
+				IF fbReadParameterSet.Done THEN
+					nState := EXECUTE;
+				END_IF
+				IF Error THEN nState := ABORTED; END_IF
+			E_JogMode.MC_JOGMODE_INCHING:
+        		//
+			E_JogMode.MC_JOGMODE_INCHING_MODULO:  
+        		//
+			E_JogMode.MC_JOGMODE_STANDARD_FAST: 
+				fbReadParameterSet(Parameter := stParameters, Axis := Axis, Execute := TRUE, Error => Error, ErrorID => ErrorID); 
+				fbMoveRelativeCA.Distance  	:= SEL(bBackwards, stParameters.fEncModuloFactor, -stParameters.fEncModuloFactor);
+				fbMoveRelativeCA.Velocity	:= stParameters.fVeloFastManual;
+				IF fbReadParameterSet.Done THEN
+					nState := EXECUTE;
+				END_IF
+				IF Error THEN nState := ABORTED; END_IF
+			E_JogMode.MC_JOGMODE_STANDARD_SLOW:
+				fbReadParameterSet(Parameter := stParameters, Axis := Axis, Execute := TRUE, Error => Error, ErrorID => ErrorID); 
+				fbMoveRelativeCA.Distance  	:= SEL(bBackwards, stParameters.fEncModuloFactor, -stParameters.fEncModuloFactor);
+				fbMoveRelativeCA.Velocity	:= stParameters.fVeloSlowManual;
+				IF fbReadParameterSet.Done THEN
+					nState := EXECUTE;
+				END_IF
+				IF Error THEN nState := ABORTED; END_IF
+		END_CASE
+		
+	EXECUTE:
+
+		fbMoveRelativeCA(Axis := Axis, Execute := TRUE, Active => Active, Error => Error, ErrorID => ErrorID, CommandAborted => CommandAborted, Done => Done);	
+		IF (JogForward = FALSE AND bBackwards = FALSE) OR (JogBackwards = FALSE AND bBackwards = TRUE) THEN
+			nState := STOPPING;
+		END_IF
+		IF Error THEN nState := ABORTED; END_IF
+	
+	STOPPING:
+	
+		fbHaltCA(Axis := Axis, Execute := TRUE, Error => Error, ErrorID => ErrorID, CommandAborted => CommandAborted, Done => Done);
+		IF Error THEN nState := ABORTED; END_IF
+		IF Done THEN nState := IDLE; Busy := FALSE; END_IF
+		
+	ABORTED:
+		Active 	:= FALSE;
+		Busy 	:= FALSE;
+		Done	:= FALSE;
+		IF (JogForward = FALSE AND bBackwards = FALSE) OR (JogBackwards = FALSE AND bBackwards = TRUE) THEN
+			Error 	:= FALSE;
+			nState 	:= IDLE;
+		END_IF
+	
+END_CASE
+
+Old_bJogForward := JogForward;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

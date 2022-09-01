@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="stXTSCfg" Id="{d4f3e01a-17b4-4001-bf5c-b2d86a01486c}">
+    <Declaration><![CDATA[TYPE stXTSCfg :
+STRUCT
+	bInvertPolarity		: BOOL;
+	udiNumStations		: UDINT;
+	udiMoverMode		: UDINT := 1; //1 --> Single, 2 --> Double, 3 --> Triple
+	lrMoverDistance		: LREAL := 60.0; //Distance between movers when Mover mode is different of single
+	stStationsCfg 		: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation] OF stStationCfg;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

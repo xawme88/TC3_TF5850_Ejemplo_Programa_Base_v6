@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="stXTSCfg" Id="{e3a14ef5-570a-45ab-a2e6-fc240697e1d3}">
+    <Declaration><![CDATA[TYPE stXTSCfg :
+STRUCT
+	bInvertPolarity		: BOOL;
+	udiNumStations		: UDINT;
+	stStationsCfg 		: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation] OF stStationCfg;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

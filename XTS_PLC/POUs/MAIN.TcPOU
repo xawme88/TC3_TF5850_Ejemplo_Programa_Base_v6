@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="MAIN" Id="{85bca7ef-4594-424a-a11c-83d30e376864}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+//XTS Program Call
+XTS_PRG();
+
+
+
+
+
+
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
