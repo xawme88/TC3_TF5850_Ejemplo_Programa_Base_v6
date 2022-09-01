@@ -104,7 +104,7 @@
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value">571</v>
+                      <v n="Value">865</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
@@ -131,7 +131,7 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value">285</v>
+                      <v n="Value">432</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
@@ -329,7 +329,7 @@
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">469</v>
+                      <v n="Value" t="Int16">838</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
@@ -613,6 +613,10 @@
                       <v n="Value">"SEL_NONE"</v>
                     </o>
                     <o>
+                      <v n="Id">823443203L</v>
+                      <v n="Value">"1010"</v>
+                    </o>
+                    <o>
                       <v n="Id">1636817830L</v>
                       <v n="Value">"%s"</v>
                     </o>
@@ -634,15 +638,15 @@
                     </o>
                     <o>
                       <v n="Id">2360805529L</v>
-                      <v n="Value">"%5.2f"</v>
+                      <v n="Value">"%x"</v>
                     </o>
                     <o>
                       <v n="Id">3617634700L</v>
-                      <v n="Value">"%d"</v>
+                      <v n="Value">"%s"</v>
                     </o>
                     <o>
                       <v n="Id">3780258175L</v>
-                      <v n="Value">"%5.2f"</v>
+                      <v n="Value">"%s"</v>
                     </o>
                     <o>
                       <v n="Id">225073791L</v>
@@ -670,19 +674,19 @@
                     </o>
                     <o>
                       <v n="Id">3723444502L</v>
-                      <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrStopPosition[3]"</v>
+                      <v n="Value">"xts.aStations[INDEX].udiSequenceState"</v>
                     </o>
                     <o>
                       <v n="Id">1218418051L</v>
-                      <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrProcessingTime"</v>
+                      <v n="Value">"xts.aStations[INDEX].udiErrorID"</v>
                     </o>
                     <o>
                       <v n="Id">746581629L</v>
-                      <v n="Value">"xts.stCfg.stStationsCfg[INDEX].uiNumStopPositions"</v>
+                      <v n="Value">"xts.aStations[INDEX].sMoversWaiting"</v>
                     </o>
                     <o>
                       <v n="Id">3104783080L</v>
-                      <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrTravelTime"</v>
+                      <v n="Value">"xts.aStations[INDEX].sMoversIn"</v>
                     </o>
                     <o>
                       <v n="Id">2501879983L</v>
@@ -691,6 +695,166 @@
                     <o>
                       <v n="Id">7306298L</v>
                       <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrEndPosition"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2232123230L</v>
+                      <v n="Value">"Name"</v>
+                    </o>
+                    <o>
+                      <v n="Id">511219082L</v>
+                      <v n="Value">"Manual Ack"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1755163831L</v>
+                      <v n="Value">"Ack"</v>
+                    </o>
+                    <o>
+                      <v n="Id">4092479075L</v>
+                      <v n="Value">"Movers Waiting"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2237128397L</v>
+                      <v n="Value">"State"</v>
+                    </o>
+                    <o>
+                      <v n="Id">505689113L</v>
+                      <v n="Value">"Error ID"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1757482276L</v>
+                      <v n="Value">"Movers Waiting"</v>
+                    </o>
+                    <o>
+                      <v n="Id">4088588272L</v>
+                      <v n="Value">"Movers In"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2243050616L</v>
+                      <v n="Value">"Extra Cfg."</v>
+                    </o>
+                    <o>
+                      <v n="Id">516019884L</v>
+                      <v n="Value">"End Position"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2685023577L</v>
+                      <v n="Value">"stTableStruct.b1"</v>
+                    </o>
+                    <o>
+                      <v n="Id">3312258591L</v>
+                      <v n="Value">"stTableStruct.b2"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1791247317L</v>
+                      <v n="Value">"stTableStruct.b3"</v>
+                    </o>
+                    <o>
+                      <v n="Id">262371475L</v>
+                      <v n="Value">"stTableStruct.b4"</v>
+                    </o>
+                    <o>
+                      <v n="Id">4008173056L</v>
+                      <v n="Value">"stTableStruct.b5"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2340480326L</v>
+                      <v n="Value">"stTableStruct.b6"</v>
+                    </o>
+                    <o>
+                      <v n="Id">606709900L</v>
+                      <v n="Value">"stTableStruct.b7"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1095668682L</v>
+                      <v n="Value">"stTableStruct.b8"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1037165547L</v>
+                      <v n="Value">"stTableStruct.b9"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1488378029L</v>
+                      <v n="Value">"stTableStruct.b10"</v>
+                    </o>
+                    <o>
+                      <v n="Id">4036189354L</v>
+                      <v n="Value">121</v>
+                    </o>
+                    <o>
+                      <v n="Id">1010392116L</v>
+                      <v n="Value" t="Int16">80</v>
+                    </o>
+                    <o>
+                      <v n="Id">2998295511L</v>
+                      <v n="Value" t="Int16">50</v>
+                    </o>
+                    <o>
+                      <v n="Id">2115787593L</v>
+                      <v n="Value" t="Int16">100</v>
+                    </o>
+                    <o>
+                      <v n="Id">1960399440L</v>
+                      <v n="Value" t="Int16">50</v>
+                    </o>
+                    <o>
+                      <v n="Id">3094565582L</v>
+                      <v n="Value">79</v>
+                    </o>
+                    <o>
+                      <v n="Id">922506541L</v>
+                      <v n="Value" t="Int16">200</v>
+                    </o>
+                    <o>
+                      <v n="Id">4199962035L</v>
+                      <v n="Value" t="Int16">80</v>
+                    </o>
+                    <o>
+                      <v n="Id">594954015L</v>
+                      <v n="Value" t="Int16">80</v>
+                    </o>
+                    <o>
+                      <v n="Id">4024190849L</v>
+                      <v n="Value" t="Int16">120</v>
+                    </o>
+                    <o>
+                      <v n="Id">3669839856L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1960173153L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">1562208915L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">4084595458L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">244056951L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2699334374L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2301371924L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">658814853L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">2846806207L</v>
+                      <v n="Value">"HCENTER"</v>
+                    </o>
+                    <o>
+                      <v n="Id">130433326L</v>
+                      <v n="Value">"HCENTER"</v>
                     </o>
                     <o>
                       <v n="Id">2318311169L</v>
@@ -790,19 +954,19 @@
                     </o>
                     <o>
                       <v n="Id">3236595599L</v>
-                      <v n="Value">false</v>
+                      <v n="Value">true</v>
                     </o>
                     <o>
                       <v n="Id">23353423L</v>
-                      <v n="Value">false</v>
+                      <v n="Value">true</v>
                     </o>
                     <o>
                       <v n="Id">2558934606L</v>
-                      <v n="Value">false</v>
+                      <v n="Value">true</v>
                     </o>
                     <o>
                       <v n="Id">1493754254L</v>
-                      <v n="Value">false</v>
+                      <v n="Value">true</v>
                     </o>
                     <o>
                       <v n="Id">3404731720L</v>
@@ -813,208 +977,44 @@
                       <v n="Value">false</v>
                     </o>
                     <o>
-                      <v n="Id">2232123230L</v>
-                      <v n="Value">"Name"</v>
-                    </o>
-                    <o>
-                      <v n="Id">2685023577L</v>
-                      <v n="Value">"stTableStruct.b1"</v>
-                    </o>
-                    <o>
                       <v n="Id">175837068L</v>
                       <v n="Value">true</v>
-                    </o>
-                    <o>
-                      <v n="Id">4036189354L</v>
-                      <v n="Value">121</v>
-                    </o>
-                    <o>
-                      <v n="Id">3669839856L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">511219082L</v>
-                      <v n="Value">"Manual Ack"</v>
-                    </o>
-                    <o>
-                      <v n="Id">3312258591L</v>
-                      <v n="Value">"stTableStruct.b2"</v>
                     </o>
                     <o>
                       <v n="Id">2541022970L</v>
                       <v n="Value">true</v>
                     </o>
                     <o>
-                      <v n="Id">1010392116L</v>
-                      <v n="Value" t="Int16">80</v>
-                    </o>
-                    <o>
-                      <v n="Id">1960173153L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">1755163831L</v>
-                      <v n="Value">"Ack"</v>
-                    </o>
-                    <o>
-                      <v n="Id">1791247317L</v>
-                      <v n="Value">"stTableStruct.b3"</v>
-                    </o>
-                    <o>
                       <v n="Id">3944074017L</v>
                       <v n="Value">true</v>
-                    </o>
-                    <o>
-                      <v n="Id">2998295511L</v>
-                      <v n="Value" t="Int16">90</v>
-                    </o>
-                    <o>
-                      <v n="Id">1562208915L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">4092479075L</v>
-                      <v n="Value">"Movers Waiting"</v>
-                    </o>
-                    <o>
-                      <v n="Id">2115787593L</v>
-                      <v n="Value" t="Int16">100</v>
-                    </o>
-                    <o>
-                      <v n="Id">262371475L</v>
-                      <v n="Value">"stTableStruct.b4"</v>
                     </o>
                     <o>
                       <v n="Id">1981426263L</v>
                       <v n="Value">true</v>
                     </o>
                     <o>
-                      <v n="Id">4084595458L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">2237128397L</v>
-                      <v n="Value">"Stop Position 3"</v>
-                    </o>
-                    <o>
-                      <v n="Id">4008173056L</v>
-                      <v n="Value">"stTableStruct.b5"</v>
-                    </o>
-                    <o>
                       <v n="Id">332890263L</v>
                       <v n="Value">true</v>
-                    </o>
-                    <o>
-                      <v n="Id">1960399440L</v>
-                      <v n="Value">91</v>
-                    </o>
-                    <o>
-                      <v n="Id">244056951L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">505689113L</v>
-                      <v n="Value">"Process Time"</v>
-                    </o>
-                    <o>
-                      <v n="Id">2340480326L</v>
-                      <v n="Value">"stTableStruct.b6"</v>
                     </o>
                     <o>
                       <v n="Id">2396545505L</v>
                       <v n="Value">true</v>
                     </o>
                     <o>
-                      <v n="Id">3094565582L</v>
-                      <v n="Value" t="Int16">80</v>
-                    </o>
-                    <o>
-                      <v n="Id">2699334374L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">1757482276L</v>
-                      <v n="Value">"Stop Positions"</v>
-                    </o>
-                    <o>
-                      <v n="Id">606709900L</v>
-                      <v n="Value">"stTableStruct.b7"</v>
-                    </o>
-                    <o>
                       <v n="Id">4072227898L</v>
                       <v n="Value">true</v>
-                    </o>
-                    <o>
-                      <v n="Id">922506541L</v>
-                      <v n="Value" t="Int16">80</v>
-                    </o>
-                    <o>
-                      <v n="Id">2301371924L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">4088588272L</v>
-                      <v n="Value">"Travel Time"</v>
-                    </o>
-                    <o>
-                      <v n="Id">4199962035L</v>
-                      <v n="Value" t="Int16">80</v>
-                    </o>
-                    <o>
-                      <v n="Id">1095668682L</v>
-                      <v n="Value">"stTableStruct.b8"</v>
                     </o>
                     <o>
                       <v n="Id">1874240844L</v>
                       <v n="Value">true</v>
                     </o>
                     <o>
-                      <v n="Id">658814853L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">2243050616L</v>
-                      <v n="Value">"Extra Cfg."</v>
-                    </o>
-                    <o>
-                      <v n="Id">594954015L</v>
-                      <v n="Value" t="Int16">80</v>
-                    </o>
-                    <o>
-                      <v n="Id">1037165547L</v>
-                      <v n="Value">"stTableStruct.b9"</v>
-                    </o>
-                    <o>
                       <v n="Id">958534074L</v>
                       <v n="Value">true</v>
                     </o>
                     <o>
-                      <v n="Id">2846806207L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">516019884L</v>
-                      <v n="Value">"End Position"</v>
-                    </o>
-                    <o>
-                      <v n="Id">4024190849L</v>
-                      <v n="Value" t="Int16">120</v>
-                    </o>
-                    <o>
-                      <v n="Id">1488378029L</v>
-                      <v n="Value">"stTableStruct.b10"</v>
-                    </o>
-                    <o>
                       <v n="Id">2754474188L</v>
                       <v n="Value">true</v>
-                    </o>
-                    <o>
-                      <v n="Id">130433326L</v>
-                      <v n="Value">"HCENTER"</v>
-                    </o>
-                    <o>
-                      <v n="Id">823443203L</v>
-                      <v n="Value">"1010"</v>
                     </o>
                   </l>
                 </o>
@@ -1129,50 +1129,6 @@
                           <v n="Id">2477733581L</v>
                           <v n="Value">"xts.aStations[INDEX].fbMoversFIFO.nMovers"</v>
                         </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
-                        </o>
                       </l>
                     </o>
                     <v n="VisualElementName">"Rectangle"</v>
@@ -1278,50 +1234,6 @@
                           <v n="Id">2477733581L</v>
                           <v n="Value">""</v>
                         </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
-                        </o>
                       </l>
                     </o>
                     <v n="VisualElementName">"Rectangle"</v>
@@ -1357,7 +1269,7 @@
                         </o>
                         <o>
                           <v n="Id">746581629L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].uiNumStopPositions"</v>
+                          <v n="Value">"xts.aStations[INDEX].sMoversWaiting"</v>
                         </o>
                         <o>
                           <v n="Id">300201419L</v>
@@ -1369,7 +1281,7 @@
                         </o>
                         <o>
                           <v n="Id">3617634700L</v>
-                          <v n="Value">"%d"</v>
+                          <v n="Value">"%s"</v>
                         </o>
                         <o>
                           <v n="Id">2647047426L</v>
@@ -1415,51 +1327,7 @@
                         </o>
                         <o>
                           <v n="Id">2477733581L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].uiNumStopPositions"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
+                          <v n="Value">"xts.aStations[INDEX].sMoversWaiting"</v>
                         </o>
                       </l>
                     </o>
@@ -1515,7 +1383,7 @@
                         </o>
                         <o>
                           <v n="Id">3723444502L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrStopPosition[3]"</v>
+                          <v n="Value">"xts.aStations[INDEX].udiSequenceState"</v>
                         </o>
                         <o>
                           <v n="Id">313517735L</v>
@@ -1573,51 +1441,7 @@
                         </o>
                         <o>
                           <v n="Id">2477733581L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrStopPosition[3]"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
+                          <v n="Value">"xts.aStations[INDEX].udiSequenceState"</v>
                         </o>
                       </l>
                     </o>
@@ -1673,7 +1497,7 @@
                         </o>
                         <o>
                           <v n="Id">1218418051L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrProcessingTime"</v>
+                          <v n="Value">"xts.aStations[INDEX].udiErrorID"</v>
                         </o>
                         <o>
                           <v n="Id">319442705L</v>
@@ -1685,7 +1509,7 @@
                         </o>
                         <o>
                           <v n="Id">2360805529L</v>
-                          <v n="Value">"%5.2f"</v>
+                          <v n="Value">"%x"</v>
                         </o>
                         <o>
                           <v n="Id">4180068092L</v>
@@ -1731,51 +1555,7 @@
                         </o>
                         <o>
                           <v n="Id">2477733581L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrProcessingTime"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
+                          <v n="Value">"xts.aStations[INDEX].udiErrorID"</v>
                         </o>
                       </l>
                     </o>
@@ -1924,50 +1704,6 @@
                           <v n="Id">2477733581L</v>
                           <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bManualAck"</v>
                         </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
-                        </o>
                       </l>
                     </o>
                     <v n="VisualElementName">"Rectangle"</v>
@@ -2088,50 +1824,6 @@
                           <v n="Id">2477733581L</v>
                           <v n="Value">"xts.stCfg.stStationsCfg[INDEX].sName"</v>
                         </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
-                        </o>
                       </l>
                     </o>
                     <v n="VisualElementName">"Rectangle"</v>
@@ -2165,6 +1857,134 @@
                     <a n="LMGuids" et="Guid" />
                     <d n="SubElements" t="Hashtable" />
                     <v n="VisualElementId">1</v>
+                    <l n="UserManagementAccessRights" t="ArrayList" />
+                  </o>
+                  <v>Columns.Column.[1].Template</v>
+                  <o>
+                    <a n="ConfiguredComplexInputs" cet="ComplexInput">
+                      <o>
+                        <n n="DescriptionTree" />
+                        <o n="VisualElemMemberList" t="VisualElemMemberList">
+                          <l n="VisualElemMemberList" t="VisualElemMemberCollection" cet="VisualElemMember">
+                            <o>
+                              <v n="Id">1186196937L</v>
+                              <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
+                            </o>
+                          </l>
+                        </o>
+                        <v n="SignatureName">"Visu_ToggleInput"</v>
+                        <v n="Name">"Toggle"</v>
+                        <v n="Description">"Configure the toggling of a Boolean variable"</v>
+                      </o>
+                    </a>
+                    <l n="Elements" t="ArrayList" />
+                    <n n="VisualElementDescription" />
+                    <o n="VisualElemMemberList" t="VisualElemMemberList">
+                      <l n="VisualElemMemberList" t="VisualElemMemberCollection" cet="VisualElemMember">
+                        <o>
+                          <v n="Id">1892666644L</v>
+                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
+                        </o>
+                        <o>
+                          <v n="Id">2498362508L</v>
+                          <v n="Value">"VISU_ST_RECTANGLE"</v>
+                        </o>
+                        <o>
+                          <v n="Id">99788756L</v>
+                          <v n="Value">1U</v>
+                        </o>
+                        <o>
+                          <v n="Id">4162487590L</v>
+                          <v n="Value">"HCENTER"</v>
+                        </o>
+                        <o>
+                          <v n="Id">362605001L</v>
+                          <v n="Value">"VCENTER"</v>
+                        </o>
+                        <o>
+                          <v n="Id">2846493933L</v>
+                          <l n="Value" t="ArrayList" cet="NamedStyleColor">
+                            <o>
+                              <v n="Color">-16777216</v>
+                              <v n="CanonicalName">"Black"</v>
+                            </o>
+                          </l>
+                        </o>
+                        <o>
+                          <v n="Id">3984183643L</v>
+                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
+                        </o>
+                        <o>
+                          <v n="Id">1467829077L</v>
+                          <v n="Value">"%s"</v>
+                        </o>
+                        <o>
+                          <v n="Id">3245776491L</v>
+                          <v n="Value">""</v>
+                        </o>
+                        <o>
+                          <v n="Id">1992950801L</v>
+                          <v n="Value">"BS_SOLID"</v>
+                        </o>
+                        <o>
+                          <v n="Id">101722327L</v>
+                          <l n="Value" t="ArrayList" cet="UInt32">
+                            <v>4294967295</v>
+                          </l>
+                        </o>
+                        <o>
+                          <v n="Id">911625652L</v>
+                          <l n="Value" t="ArrayList" cet="NamedStyleFont">
+                            <o>
+                              <v n="FontStyle">0</v>
+                              <v n="AdditionalFontStyle" t="UInt16">0</v>
+                              <v n="ExplicitColor">-16777216</v>
+                              <v n="CanonicalName">"Font-Standard"</v>
+                              <v n="FontName">"Arial"</v>
+                              <v n="FontSize">12</v>
+                              <v n="ScriptIdentification">0</v>
+                              <v n="DoubleFontSize" t="Double">0</v>
+                              <n n="NamedColor" />
+                            </o>
+                          </l>
+                        </o>
+                        <o>
+                          <v n="Id">1560556430L</v>
+                          <l n="Value" t="ArrayList" cet="UInt32">
+                            <v>4278190080</v>
+                          </l>
+                        </o>
+                        <o>
+                          <v n="Id">2955924531L</v>
+                          <v n="Value">"PS_SOLID"</v>
+                        </o>
+                        <o>
+                          <v n="Id">2090474177L</v>
+                          <l n="Value" t="ArrayList" cet="NamedStyleColor">
+                            <o>
+                              <v n="Color">-8323200</v>
+                              <v n="CanonicalName">"Lightgreen"</v>
+                            </o>
+                          </l>
+                        </o>
+                        <o>
+                          <v n="Id">2477733581L</v>
+                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
+                        </o>
+                      </l>
+                    </o>
+                    <v n="VisualElementName">"Rectangle"</v>
+                    <v n="VisualElementTypeName">"VisuFbElemSimple"</v>
+                    <v n="VisualElementIsRectangle">true</v>
+                    <v n="VisualElementIdentifier">"Columns.Column.[1].Template"</v>
+                    <n n="VisualElementOfflinePaintCommands" />
+                    <n n="VisualElementFrameInformation" />
+                    <d n="VisualElementInputActions" t="Hashtable" />
+                    <v n="VisualElementIdentification">{1daa081d-9d4a-4c9b-8909-e24a4de45e9a}</v>
+                    <v n="VisualElementOwningObjectGuid">{f9e20e03-8613-4e3e-8212-6b9c477a923d}</v>
+                    <a n="LMGuids" et="Guid" />
+                    <d n="SubElements" t="Hashtable" />
+                    <v n="VisualElementId">2</v>
                     <l n="UserManagementAccessRights" t="ArrayList" />
                   </o>
                   <v>Columns.Column.[7].Template</v>
@@ -2203,7 +2023,7 @@
                         </o>
                         <o>
                           <v n="Id">3780258175L</v>
-                          <v n="Value">"%5.2f"</v>
+                          <v n="Value">"%s"</v>
                         </o>
                         <o>
                           <v n="Id">146172311L</v>
@@ -2215,7 +2035,7 @@
                         </o>
                         <o>
                           <v n="Id">3104783080L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrTravelTime"</v>
+                          <v n="Value">"xts.aStations[INDEX].sMoversIn"</v>
                         </o>
                         <o>
                           <v n="Id">733226161L</v>
@@ -2254,51 +2074,7 @@
                         </o>
                         <o>
                           <v n="Id">2477733581L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrTravelTime"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
+                          <v n="Value">"xts.aStations[INDEX].sMoversIn"</v>
                         </o>
                       </l>
                     </o>
@@ -2414,50 +2190,6 @@
                           <v n="Id">2477733581L</v>
                           <v n="Value">"xts.stCfg.stStationsCfg[INDEX].lrEndPosition"</v>
                         </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
-                        </o>
                       </l>
                     </o>
                     <v n="VisualElementName">"Rectangle"</v>
@@ -2491,178 +2223,6 @@
                     <a n="LMGuids" et="Guid" />
                     <d n="SubElements" t="Hashtable" />
                     <v n="VisualElementId">8</v>
-                    <l n="UserManagementAccessRights" t="ArrayList" />
-                  </o>
-                  <v>Columns.Column.[1].Template</v>
-                  <o>
-                    <a n="ConfiguredComplexInputs" cet="ComplexInput">
-                      <o>
-                        <n n="DescriptionTree" />
-                        <o n="VisualElemMemberList" t="VisualElemMemberList">
-                          <l n="VisualElemMemberList" t="VisualElemMemberCollection" cet="VisualElemMember">
-                            <o>
-                              <v n="Id">1186196937L</v>
-                              <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
-                            </o>
-                          </l>
-                        </o>
-                        <v n="SignatureName">"Visu_ToggleInput"</v>
-                        <v n="Name">"Toggle"</v>
-                        <v n="Description">"Configure the toggling of a Boolean variable"</v>
-                      </o>
-                    </a>
-                    <l n="Elements" t="ArrayList" />
-                    <n n="VisualElementDescription" />
-                    <o n="VisualElemMemberList" t="VisualElemMemberList">
-                      <l n="VisualElemMemberList" t="VisualElemMemberCollection" cet="VisualElemMember">
-                        <o>
-                          <v n="Id">1892666644L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2498362508L</v>
-                          <v n="Value">"VISU_ST_RECTANGLE"</v>
-                        </o>
-                        <o>
-                          <v n="Id">99788756L</v>
-                          <v n="Value">1U</v>
-                        </o>
-                        <o>
-                          <v n="Id">4162487590L</v>
-                          <v n="Value">"HCENTER"</v>
-                        </o>
-                        <o>
-                          <v n="Id">362605001L</v>
-                          <v n="Value">"VCENTER"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2846493933L</v>
-                          <l n="Value" t="ArrayList" cet="NamedStyleColor">
-                            <o>
-                              <v n="Color">-16777216</v>
-                              <v n="CanonicalName">"Black"</v>
-                            </o>
-                          </l>
-                        </o>
-                        <o>
-                          <v n="Id">3984183643L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
-                        </o>
-                        <o>
-                          <v n="Id">1467829077L</v>
-                          <v n="Value">"%s"</v>
-                        </o>
-                        <o>
-                          <v n="Id">3245776491L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">1992950801L</v>
-                          <v n="Value">"BS_SOLID"</v>
-                        </o>
-                        <o>
-                          <v n="Id">101722327L</v>
-                          <l n="Value" t="ArrayList" cet="UInt32">
-                            <v>4294967295</v>
-                          </l>
-                        </o>
-                        <o>
-                          <v n="Id">911625652L</v>
-                          <l n="Value" t="ArrayList" cet="NamedStyleFont">
-                            <o>
-                              <v n="FontStyle">0</v>
-                              <v n="AdditionalFontStyle" t="UInt16">0</v>
-                              <v n="ExplicitColor">-16777216</v>
-                              <v n="CanonicalName">"Font-Standard"</v>
-                              <v n="FontName">"Arial"</v>
-                              <v n="FontSize">12</v>
-                              <v n="ScriptIdentification">0</v>
-                              <v n="DoubleFontSize" t="Double">0</v>
-                              <n n="NamedColor" />
-                            </o>
-                          </l>
-                        </o>
-                        <o>
-                          <v n="Id">1560556430L</v>
-                          <l n="Value" t="ArrayList" cet="UInt32">
-                            <v>4278190080</v>
-                          </l>
-                        </o>
-                        <o>
-                          <v n="Id">2955924531L</v>
-                          <v n="Value">"PS_SOLID"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2090474177L</v>
-                          <l n="Value" t="ArrayList" cet="NamedStyleColor">
-                            <o>
-                              <v n="Color">-8323200</v>
-                              <v n="CanonicalName">"Lightgreen"</v>
-                            </o>
-                          </l>
-                        </o>
-                        <o>
-                          <v n="Id">2477733581L</v>
-                          <v n="Value">"xts.stCfg.stStationsCfg[INDEX].bEnableManualAck"</v>
-                        </o>
-                        <o>
-                          <v n="Id">2812299069L</v>
-                          <v n="Value">4294967295U</v>
-                        </o>
-                        <o>
-                          <v n="Id">494569607L</v>
-                          <v n="Value">4278190080U</v>
-                        </o>
-                        <o>
-                          <v n="Id">3719097617L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1649127785L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">357335551L</v>
-                          <v n="Value">10</v>
-                        </o>
-                        <o>
-                          <v n="Id">2422045748L</v>
-                          <v n="Value">150</v>
-                        </o>
-                        <o>
-                          <v n="Id">2134141914L</v>
-                          <v n="Value">30</v>
-                        </o>
-                        <o>
-                          <v n="Id">390574330L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">571893170L</v>
-                          <v n="Value">""</v>
-                        </o>
-                        <o>
-                          <v n="Id">550940142L</v>
-                          <v n="Value">0</v>
-                        </o>
-                        <o>
-                          <v n="Id">1473355128L</v>
-                          <v n="Value">0</v>
-                        </o>
-                      </l>
-                    </o>
-                    <v n="VisualElementName">"Rectangle"</v>
-                    <v n="VisualElementTypeName">"VisuFbElemSimple"</v>
-                    <v n="VisualElementIsRectangle">true</v>
-                    <v n="VisualElementIdentifier">"Columns.Column.[1].Template"</v>
-                    <n n="VisualElementOfflinePaintCommands" />
-                    <n n="VisualElementFrameInformation" />
-                    <d n="VisualElementInputActions" t="Hashtable" />
-                    <v n="VisualElementIdentification">{1daa081d-9d4a-4c9b-8909-e24a4de45e9a}</v>
-                    <v n="VisualElementOwningObjectGuid">{f9e20e03-8613-4e3e-8212-6b9c477a923d}</v>
-                    <a n="LMGuids" et="Guid" />
-                    <d n="SubElements" t="Hashtable" />
-                    <v n="VisualElementId">2</v>
                     <l n="UserManagementAccessRights" t="ArrayList" />
                   </o>
                 </d>
@@ -2858,12 +2418,12 @@
             <d2 n="Size" ckt="Int32" cvt="VisualObjectSize">
               <v>0</v>
               <o>
-                <v n="Width">571</v>
+                <v n="Width">865</v>
                 <v n="Height">410</v>
               </o>
               <v>1</v>
               <o>
-                <v n="Width">572</v>
+                <v n="Width">866</v>
                 <v n="Height">411</v>
               </o>
             </d2>

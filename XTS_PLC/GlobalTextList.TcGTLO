@@ -16,8 +16,18 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"70"</v>
+              <v n="TextDefault">"%D"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"164"</v>
               <v n="TextDefault">"%s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"863"</v>
+              <v n="TextDefault">"%x"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -96,6 +106,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"443"</v>
+              <v n="TextDefault">"Error ID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"529"</v>
               <v n="TextDefault">"Extra Cfg."</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -161,8 +176,23 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"973"</v>
+              <v n="TextDefault">"MOVER SELECTION"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"241"</v>
               <v n="TextDefault">"MOVERS"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"696"</v>
+              <v n="TextDefault">"Movers In"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"902"</v>
+              <v n="TextDefault">"MOVERS SELECTION"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -216,8 +246,18 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"813"</v>
+              <v n="TextDefault">"State"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"1046"</v>
               <v n="TextDefault">"Station Selection"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"392"</v>
+              <v n="TextDefault">"STATION SELECTION"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>

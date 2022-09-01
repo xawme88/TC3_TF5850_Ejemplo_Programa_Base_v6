@@ -117,7 +117,10 @@ VAR
 END_VAR
 VAR
 	//Visu
-	iFrameSelection			: INT;
+	iFrameSelection				: INT;
+	iVisuMoverSelection			: INT := 1;		//Mover ID to move in manual mode. If ID is equal to zero all movers are moved
+	iVisuStationSelection		: INT := 1;		//Target Station ID for mover selected. If zero manual mode works with target position input
+	iVisuStopPositionSelection	: INT := 2;		//Target Stop Position 1, 2 or 3
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[
@@ -153,11 +156,12 @@ VAR_INST
 	bAllDone 	: BOOL;
 	i 			: UDINT;
 	bBusy		: BOOL;
+	udiErrorID	: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
 //Error managment
-IF bError OR bReset AND iState <> 999 THEN iState := 999; END_IF
+IF (bError OR bReset) AND iState <> 999 AND bBusy = TRUE THEN iState := 999; END_IF
 
 CASE iState OF
 	
@@ -172,7 +176,7 @@ CASE iState OF
 		END_IF
 		
 	1 : //ReConfigure Stations
-		sLog := 'Auto: Configure stations';
+		sLog := CONCAT('Auto: Configure stations, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
 			aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
@@ -180,7 +184,7 @@ CASE iState OF
 				IF aStationsOTCID[i] <> 0 THEN
 					bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCurrentCfg.udiNumStations);
 				END_IF
-			ELSE
+			ELSIF aStationsOTCID[1] = 0 THEN
 				bAllDone := TRUE;
 			END_IF
 			IF i<stCfg.udiNumStations THEN
@@ -190,7 +194,6 @@ CASE iState OF
 			END_IF
 		END_FOR
 		IF bAllDone THEN
-			//stVisuStationsCfg := stCfg.stStationsCfg;
 			FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
 				IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN 
 					aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
@@ -200,19 +203,28 @@ CASE iState OF
 		END_IF
 
 	2 : //Put all stations in auto mode
-		sLog := 'Auto: Put stations in auto mode';
+		sLog := CONCAT('Auto: Put stations in auto mode, State: ', INT_TO_STRING(iState));
 		bAllDOne := TRUE;
 		FOR i:= 1 TO stCurrentCfg.udiNumStations DO
-			bAllDone := bAllDOne AND aStations[i].Sequence2(TRUE, FALSE);
+			bAllDone := bAllDOne AND aStations[i].Sequence2(TRUE, FALSE, m_udiErrorID => udiErrorID);
+			IF udiErrorID <> 0 THEN
+				sLog := '';
+				sLog := CONCAT('Auto: Error in station: ', UDINT_TO_STRING(i));
+				iState := 1000;		
+			END_IF
 		END_FOR
 		IF bAllDone THEN iState := iState + 1; END_IF
 		IF bEnable = FALSE THEN iState := 100; END_IF
 		
 	3 : //Move all to zero position
-		sLog := 'Auto: Move movers to start position';
+		sLog := CONCAT('Auto: Move movers to start position, State: ', INT_TO_STRING(iState));
 		bAllDOne := FALSE;
 		FOR i:= 1 TO udiNumMovers DO
-			bAllDone := bAllDOne OR ax[i].moveca_gap(TRUE, 0.0, 1000.0, stCurrentCfg.lrMoverDistance);
+			IF stCurrentCfg.udiMoverMode <> 1 THEN
+				bAllDone := bAllDOne OR ax[i].moveca_gap(TRUE, 0.0, 1000.0, stCurrentCfg.lrMoverDistance);
+			ELSE
+				bAllDone := bAllDOne OR ax[i].moveca(TRUE, 0.0, 1000.0);
+			END_IF
 		END_FOR
 		IF bAllMoversStandStill AND bAllDone THEN
 			udiFirstMover := WhoIsAtPos(0.0);
@@ -228,14 +240,24 @@ CASE iState OF
 		END_IF
 		
 	4 : //Gear in passive movers
-		sLog := 'Auto: Gear in passive movers';
+		sLog := CONCAT('Auto: Gear in passive movers, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i:= 1 TO udiNumMovers DO
 			IF IsPassiveMover(i) THEN
 				IF ax[1].bMoverInverted = FALSE THEN 
-					bAllDone := bAllDone AND ax[i].gearIn(TRUE, 1, 1, ax[SEL(i = udiNumMovers, i+1, 1)].p_Axis);
+					bAllDone := bAllDone AND ax[i].gearIn(TRUE, 1, 1, ax[SEL(i = udiNumMovers, i+1, 1)].p_Axis, udiErrorID => udiErrorID);
+					IF udiErrorID <> 0 THEN
+						sLog := '';
+						sLog := CONCAT('Auto: Error Gear in axis: ', UDINT_TO_STRING(i));
+						iState := 1000;		
+					END_IF
 				ELSE
-					bAllDone := bAllDone AND ax[i].gearIn(TRUE, 1, 1, ax[SEL(i = 1, i-1, udiNumMovers)].p_Axis);
+					bAllDone := bAllDone AND ax[i].gearIn(TRUE, 1, 1, ax[SEL(i = 1, i-1, udiNumMovers)].p_Axis, udiErrorID => udiErrorID);
+					IF udiErrorID <> 0 THEN
+						sLog := '';
+						sLog := CONCAT('Auto: Error Gear in axis: ', UDINT_TO_STRING(i));
+						iState := 1000;		
+					END_IF
 				END_IF
 			END_IF
 		END_FOR
@@ -249,7 +271,7 @@ CASE iState OF
 		END_IF
 
 	5 :  //Add Movers to first station
-		sLog := 'Auto: Add Movers to first station';
+		sLog := CONCAT('Auto: Add Movers to first station, State: ', INT_TO_STRING(iState)); 
 		FOR i:= 1 TO udiNumMovers DO
 			IF IsPassiveMover(i) = FALSE THEN
 				aStations[1].AddMover(ax[i].udiID);				
@@ -258,16 +280,22 @@ CASE iState OF
 		iState := iState + 1;
 	
 	6 : //Call stations auto mode
-		sLog := CONCAT('Auto: Running ', INT_TO_STRING(iState));
+		sLog := CONCAT('Auto: Running, State: ', INT_TO_STRING(iState));
 		bAllDOne := TRUE;
 		FOR i:= 1 TO stCurrentCfg.udiNumStations DO
-			bAllDone := bAllDOne AND aStations[i].Sequence2(TRUE, FALSE);
+			bAllDone := bAllDOne AND aStations[i].Sequence2(TRUE, FALSE, m_udiErrorID => udiErrorID);
+			IF udiErrorID <> 0 THEN
+				sLog := '';
+				sLog := CONCAT('Auto: Error in station: ', UDINT_TO_STRING(i));
+				iState := 1000;		
+			END_IF
 		END_FOR
 		IF bEnable = FALSE THEN 
 			iState := 100; 
 		END_IF
 	
 	100 : //Stop
+		sLog := CONCAT('Auto: Exit stations from auto mode, State: ', INT_TO_STRING(iState));
 		bAllDOne := TRUE;
 		FOR i:= 1 TO stCurrentCfg.udiNumStations DO
 			bAllDone := bAllDOne AND NOT aStations[i].Sequence2(FALSE, FALSE);
@@ -277,6 +305,7 @@ CASE iState OF
 		END_IF
 		
 	101 : //Check for all StandStill
+		sLog := CONCAT('Auto: Check all movers at standstill, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			bAllDone := bAllDone AND ax[i].standstill();
@@ -286,6 +315,7 @@ CASE iState OF
 		END_IF
 		
 	102 : //Gear Out
+		sLog := CONCAT('Auto: Gear out, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			IF IsPassiveMover(i) THEN
@@ -302,20 +332,33 @@ CASE iState OF
 		END_IF
 		
 	103 : bBusy := FALSE;
+		sLog := CONCAT('Auto: End, State: ', INT_TO_STRING(iState));
 		IF bEnable = FALSE THEN
 			iState := 0;
 		END_IF
 		
 	999 : //Error State 
 		bBusy := FALSE;
-		sLog := 'Auto: Abort'; 
+		sLog := CONCAT('Auto: Abort, State: ', INT_TO_STRING(iState));
 		FOR i:=1 TO stCurrentCfg.udiNumStations DO
 			//Abort Station Sequence
 			aStations[i].Sequence2(FALSE, TRUE);
 		END_FOR
 		IF bEnable = FALSE THEN
+			sLog := CONCAT('Auto: End, State: ', INT_TO_STRING(iState));
 			iState := 0;
 		END_IF
+		
+	1000 : //Internal Error
+		bBusy := FALSE;
+		IF bEnable = FALSE THEN
+			FOR i:=1 TO stCurrentCfg.udiNumStations DO
+				//Abort Station Sequence
+				aStations[i].Sequence2(FALSE, TRUE);
+			END_FOR
+			sLog := CONCAT('Auto: End, State: ', INT_TO_STRING(iState));
+			iState := 0;
+		END_IF		
 		
 END_CASE
 Automatic := bBusy;]]></ST>
@@ -359,6 +402,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
+IF (bError OR bReset) AND iState <> 999 AND iState <> 60 THEN iState := 999; END_IF
+
 CASE iState OF
 	
 	0 : 
@@ -372,7 +417,7 @@ CASE iState OF
 		END_IF
 	
 	10 : //Reset Movers
-		sLog := 'Enable: Reset movers';
+		sLog := CONCAT('Enable: Reset movers, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			bAllDone := bAllDone AND ax[i].reset(TRUE);
@@ -381,8 +426,18 @@ CASE iState OF
 			iState := iState + 1;
 		END_IF
 		
-	11 : //Configure movers inversion
-		sLog := 'Init: Configure movers inversion';
+	11 : //Power off all
+		sLog := CONCAT('Disable: Power off all movers, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].power_off();
+		END_FOR
+		IF bAllDone THEN
+			iState := iState + 1;
+		END_IF
+		
+	12 : //Configure movers inversion
+		sLog := CONCAT('Enable: Configure movers inversion, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			bAllDone := bAllDone AND ax[i].InvertPolarity(TRUE, stCfg.bInvertPolarity);
@@ -395,7 +450,7 @@ CASE iState OF
 	 	END_IF
 		
 	20 : //Power all Axis
-		sLog := 'Enable: Power on movers';
+		sLog := CONCAT('Enable: Power on movers, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			bAllDone := bAllDone AND ax[i].power_on();
@@ -405,7 +460,7 @@ CASE iState OF
 		END_IF
 		
 	21 : //Decopule axis
-		sLog := 'Enable: Gear out movers';
+		sLog := CONCAT('Enable: Gear out movers, State: ', INT_TO_STRING(iState));
 		FOR i:=1 TO udiNumMovers DO
 			IF ax[i].p_Axis.Status.Coupled  THEN
 				//
@@ -420,13 +475,13 @@ CASE iState OF
 		END_IF
 		
 	30 : //Reset Group
-		sLog := 'Enable: Reset group CA';
+		sLog := CONCAT('Enable: Reset group CA, State: ', INT_TO_STRING(iState));
 		IF gp.reset(TRUE) THEN
 			iState := iState + 10;
 		END_IF
 		
 	40 : //Add all axis to group
-		sLog := 'Enable: Add movers to group';
+		sLog := CONCAT('Enable: Add movers to group, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			bAllDone := bAllDone AND ax[i].add2Group(TRUE, ag := gp.ag);
@@ -439,18 +494,18 @@ CASE iState OF
 		END_IF
 		
 	50 : //Enable group
-		sLog := 'Enable: Enable group CA';
+		sLog := CONCAT('Enable: Enable group CA, State: ', INT_TO_STRING(iState));
 		IF gp.enable(TRUE) THEN
 			iState := iState + 10;
+			sLog := CONCAT('Enable: Enable done!, State: ', INT_TO_STRING(iState));
 		END_IF
 		
 	60 : //Jog Done
-		sLog := 'Enable: Done!';
 		 bDone := TRUE;
 		 IF bEnable = FALSE THEN iState := 70; END_IF 
 
 	70 : //Halt group
-		sLog := 'Disable: Halt movers';
+		sLog := CONCAT('Disable: Halt movers, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			bAllDone := bAllDone AND ax[i].haltca(TRUE);
@@ -460,19 +515,19 @@ CASE iState OF
 		END_IF
 		
 	80 : //Disable
-		sLog := 'Disable: Disable group CA';
+		sLog := CONCAT('Disable: Disable group CA, State: ', INT_TO_STRING(iState));
 		IF gp.disable(TRUE) THEN
 			iState := iState + 10;
 		END_IF		
 
 	90 : //UnGroup
-		sLog := 'Disable: UnGroup all movers';
+		sLog := CONCAT('Disable: Ungroup all movers, State: ', INT_TO_STRING(iState));
 		IF gp.ungroupall(TRUE) THEN
 			iState := iState + 10;
 		END_IF
 	
 	100 : //Power off all
-		sLog := 'Disable: Power off all movers';
+		sLog := CONCAT('Disable: Power off all movers, State: ', INT_TO_STRING(iState));
 		bAllDone := TRUE;
 		FOR i := 1 TO udiNumMovers DO
 			bAllDone := bAllDone AND ax[i].power_off();
@@ -482,6 +537,10 @@ CASE iState OF
 			bDone := FALSE;
 			iState := 0;
 		END_IF
+		
+	999 : //Error
+		sLog := CONCAT('Enable: Abort, State: ', INT_TO_STRING(iState));
+		iState := 0;
 		 
 END_CASE
 Enable := bDone;]]></ST>
@@ -507,10 +566,18 @@ IF bXPUInitDone = FALSE THEN
 	END_IF	
 END_IF
 
+IF (bError OR bReset) AND iState <> 999 AND bInitDone = FALSE THEN iState := 999; END_IF
+
 CASE iState OF
 	
 	0 : 
-		IF bXPUInitDone THEN iState := iState + 10; END_IF
+		IF bXPUInitDone THEN 
+			gp.clearCmd();
+			FOR i:=1 TO udiNumMovers DO
+				bAllDone := bAllDOne AND ax[i].clearCmd();
+			END_FOR
+			iState := iState + 10; 
+		END_IF
 	
 	10 : //Get XPU Parameters
 		sLog := 'Init: Checking XPU parameters';
@@ -682,7 +749,7 @@ CASE iState OF
 				IF aStationsOTCID[i] <> 0 THEN
 					bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCfg.udiNumStations);
 				END_IF
-			ELSE
+			ELSIF aStationsOTCID[1] = 0 THEN
 				bAllDone := TRUE;
 			END_IF
 			IF i<stCfg.udiNumStations THEN
@@ -708,6 +775,10 @@ CASE iState OF
 		 
 	71 :
 		//
+		
+	999: 
+		sLog := CONCAT('Init: Abort, State: ', INT_TO_STRING(iState));
+		iState := 0;
 			 
 END_CASE
 
@@ -784,6 +855,8 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
+IF (bError OR bReset) AND iState <> 999 and bBusy THEN iState := 999; END_IF
+
 CASE iState OF
 	0 : IF bEnable THEN 
 			iState := iState + 1; 
@@ -791,6 +864,12 @@ CASE iState OF
 		END_IF
 		
 	1 : //Idle
+		sLog := CONCAT('Manual: Idle, State: ', INT_TO_STRING(iState));
+		
+		IF iVisuMoverSelection > 0 THEN udiMoverSelection := INT_TO_UDINT(iVisuMoverSelection); ELSE udiMoverSelection := 0; END_IF
+		IF iVisuStationSelection > 0 THEN udiStationSelection := INT_TO_UDINT(iVisuStationSelection); ELSE udiStationSelection := 0; END_IF
+		IF iVisuStopPositionSelection > 0 THEN udiStopPositionSelection	:= INT_TO_UDINT(iVisuStopPositionSelection-1); ELSE udiStopPositionSelection := 0; END_IF
+		
 		IF bEnable = FALSE THEN
 			iState := 100;
 		ELSIF bJogBackwards OR bJogForward THEN
@@ -807,6 +886,7 @@ CASE iState OF
 		END_IF
 		
 	10 : //Manual mode operation 0 
+		sLog := CONCAT('Manual: Jogging, State: ', INT_TO_STRING(iState));
 		IF udiMoverSelection = 0 THEN
 			bAllDone := TRUE;
 			FOR i := 1 TO udiNumMovers DO
@@ -823,6 +903,7 @@ CASE iState OF
 		END_IF
 		
 	50 : //Manual Operation with Target Position
+		sLog := CONCAT('Manual: Go to target position: ', INT_TO_STRING(iState));
 		IF udiMoverSelection = 0 THEN
 			FOR i := 1 TO udiNumMovers DO
 				ax[i].moveca_direction(bManualMove, lrTargetPosition, lrTargetVelocity, Direction);
@@ -837,6 +918,7 @@ CASE iState OF
 		END_IF
 		
 	60 : //Manual Operation with Stations
+		sLog := CONCAT('Manual: Go to station: ', INT_TO_STRING(iState));
 		IF udiMoverSelection = 0 THEN
 			FOR i := 1 TO udiNumMovers DO
 				ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);
@@ -851,19 +933,30 @@ CASE iState OF
 		END_IF
 		
 	70 : //Teach Station
+		sLog := CONCAT('Manual: Teaching station: ', INT_TO_STRING(iState));
 		stCfg.stStationsCfg[m_udiStationSelection].lrStopPosition[udiStopPositionSelection] := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos-stCfg.stStationsCfg[m_udiStationSelection].lrStartPosition;
 		bAllDone := TRUE;	
-		FOR i:= 1 TO stCfg.udiNumStations DO
-			bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], FALSE);
+		FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
+			aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
+			IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN  
+				IF aStationsOTCID[i] <> 0 THEN
+					bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCfg.udiNumStations);
+				END_IF
+			ELSIF aStationsOTCID[1] = 0 THEN
+				bAllDone := TRUE;
+			END_IF
 		END_FOR
 		IF bAllDone THEN
-			FOR i:= 1 TO stCfg.udiNumStations DO
-				aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
+			FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
+				IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN 
+					aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
+				END_IF
 			END_FOR
 			iState := iState + 1;
 		END_IF
 		
 	71 : //Apply New Configuration
+		sLog := CONCAT('Manual: Teaching done: ', INT_TO_STRING(iState));
 		bTeachDone := TRUE;
 		IF bTeachStation = FALSE THEN
 			bTeachDone := FALSE;
@@ -871,6 +964,12 @@ CASE iState OF
 		END_IF
 		
 	100 : 
+		sLog := CONCAT('Manual: End, State: ', INT_TO_STRING(iState));
+		bBusy := FALSE;
+		iState := 0;
+		
+	999 : //Abort
+		sLog := CONCAT('Manual: Abort, State: ', INT_TO_STRING(iState));
 		bBusy := FALSE;
 		iState := 0;
 		
@@ -904,7 +1003,7 @@ CASE iState OF
 	1 :
 		bAllDone := TRUE;
 		FOR i:=1 TO udiNumMovers DO
-			IF udiFirstMover = 0 OR IsPassiveMover(i) = FALSE THEN
+			IF ax[i].p_Axis.Status.Coupled = FALSE THEN
 				bAllDone := bAllDOne AND ax[i].reset(TRUE);
 			END_IF
 		END_FOR
@@ -918,7 +1017,7 @@ CASE iState OF
 	2 : //Check if there is some axis coupled and decoupled (Is not possible to perform a reset group with axis coupled)
 		bAllDone := TRUE;
 		FOR i:=1 TO udiNumMovers DO
-			IF ax[i].p_Axis.Status.Coupled  THEN
+			IF ax[i].p_Axis.Status.Coupled THEN
 				//
 				bAllDone := bAllDOne AND ax[i].gearOut(TRUE);
 			END_IF

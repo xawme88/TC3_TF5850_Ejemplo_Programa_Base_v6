@@ -212,7 +212,7 @@ fbReset.Execute	:= FALSE;
 fbMoveAbsTimeCA(Axis := ax, bExecute := FALSE);
 fbGearIn(master := ax, slave := ax, Execute := FALSE);
 fbGearOut(slave := ax, Execute := FALSE);
-	
+InvertPolarity(FALSE, FALSE);	
 ]]></ST>
       </Implementation>
     </Method>
@@ -226,7 +226,9 @@ END_VAR
 VAR_IN_OUT
 	axMaster	: AXIS_REF;	
 END_VAR
-]]></Declaration>
+VAR_OUTPUT
+	udiErrorID			: UDINT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbGearIn.Execute 	:= bExecute;
 gearIn 				:= fbGearIn.InGear;
@@ -247,7 +249,7 @@ fbGearIn(
 	Active=> , 
 	CommandAborted=> , 
 	Error=> , 
-	ErrorID=> );]]></ST>
+	ErrorID=> udiErrorID);]]></ST>
       </Implementation>
     </Method>
     <Method Name="gearOut" Id="{37c52862-3bf3-4f3a-b3f6-3081d1d7d6d6}" FolderPath="Functionaltities\">
@@ -322,6 +324,10 @@ CASE iState OF
 			fbWrite(Axis := ax, Execute := FALSE);
 			iState := iState + 1;
 		END_IF
+		IF fbWrite.Error THEN
+			iState := 999;
+		END_IF
+		
 	2 : 
 		fbWrite(
 			Axis:= ax, 
@@ -336,12 +342,20 @@ CASE iState OF
 			fbWrite(Axis := ax, Execute := FALSE);
 			iState := iState + 1;
 		END_IF
+		IF fbWrite.Error THEN
+			iState := 999;
+		END_IF
+		
 	3 : //Job Done
 		InvertPolarity := TRUE;
 		bMoverInverted := bValue;
 		IF bExecute = FALSE THEN
 			iState := 0;
 		END_IF
+		
+	999 : //Error
+		iState := 0;
+		
 END_CASE]]></ST>
       </Implementation>
     </Method>
@@ -410,13 +424,15 @@ VAR_INPUT
 	lrPosition 	: LREAL;
 	lrTime		: LREAL;
 END_VAR
-]]></Declaration>
+VAR_OUTPUT
+	ErrorID		: UDINT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbMoveAbsTimeCA.bExecute 	:= bExecute;
 fbMoveAbsTimeCA.lrPosition 	:= lrPosition;
 fbMoveAbsTimeCA.lrTime		:= lrTime;
 moveca_bytime				:= fbMoveAbsTimeCA.Done;
-]]></ST>
+ErrorID						:= fbMoveAbsTimeCA.ErrorId;]]></ST>
       </Implementation>
     </Method>
     <Method Name="moveca_direction" Id="{15730622-1d32-4446-9e69-930c706c010a}" FolderPath="Functionaltities\">

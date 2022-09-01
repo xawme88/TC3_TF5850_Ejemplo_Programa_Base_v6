@@ -9,9 +9,9 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
 	nMovers					: UDINT;
+	aMoversFIFO				: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF UDINT;
 END_VAR
 VAR
-	aMoversFIFO				: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF UDINT;
 	aMoversFIFONull			: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF UDINT;
 END_VAR
 ]]></Declaration>

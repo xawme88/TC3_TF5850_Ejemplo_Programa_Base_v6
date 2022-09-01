@@ -12,10 +12,14 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
 	udiNumMoversIn			: UDINT;		//Number of Movers into station
+	udiErrorID				: UDINT;
 END_VAR
 VAR
 	fbMoversFIFO			: FB_MoversFIFO;	
 	bWaitingMovers			: BOOL;
+	udiSequenceState		: UDINT;
+	sMoversWaiting			: STRING;
+	sMoversIn				: STRING;
 END_VAR
 VAR CONSTANT
 	START_POSITION_ON_PART_STATION 	: DWORD := 16#03080272;
@@ -99,6 +103,9 @@ VAR_INPUT
 	bEnable 		: BOOL;
 	bAbort			: BOOL;
 END_VAR
+VAR_OUTPUT
+	m_udiErrorID	: UDINT;
+END_VAR
 VAR_INST
 	udiState  		: UDINT;
 	stCurrentCfg	: stStationCfg;
@@ -107,6 +114,7 @@ VAR_INST
 	bAllDOne		: BOOL;
 	m_bBusy			: BOOL;
 	aMoversIN		: ARRAY [1..3] OF UDINT;
+	ErrorID			: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[(* 
@@ -161,13 +169,16 @@ CASE udiState OF
 	21 : //Send Mover to Stop Position
 		bAllDone := TRUE;
 		FOR i:=1 TO udiNumMoversIn DO
-			bAllDone := bAllDone AND ax[aMoversIN[i]].moveca_bytime(TRUE, stCurrentCfg.lrStartPosition + stCurrentCfg.lrStopPosition[stCurrentCfg.uiNumStopPositions - i + 1], stCfg.lrTravelTime);
+			bAllDone := bAllDone AND ax[aMoversIN[i]].moveca_bytime(TRUE, stCurrentCfg.lrStartPosition + stCurrentCfg.lrStopPosition[stCurrentCfg.uiNumStopPositions - i + 1], stCfg.lrTravelTime, ErrorID => ErrorID);
 		END_FOR
 		//If Station full process
 		IF udiNumMoversIn = stCurrentCfg.uiNumStopPositions THEN
 			IF bAllDone THEN udiState := 30; END_IF
 		ELSE
 			udiState := udiState - 1;
+		END_IF
+		IF ErrorID <> 0 THEN
+			udiState := 999;
 		END_IF
 		
 	30 : //Check if all movers are standstill and reset commands
@@ -197,21 +208,49 @@ CASE udiState OF
 	50 : //Send out movers
 		FOR i:= 1 TO udiNumMoversIn DO
 		 	INextStation.AddMover(aMoversIN[i]);
-			ax[aMoversIN[i]].moveca_bytime(TRUE, lrPosition := INextStation.Cfg.lrStartPosition, INextStation.Cfg.lrTravelTime);
+			ax[aMoversIN[i]].moveca_bytime(TRUE, lrPosition := INextStation.Cfg.lrStartPosition, INextStation.Cfg.lrTravelTime, ErrorID => ErrorID);
 		END_FOR
 		udiNumMoversIn	:= 0;
 		udiState 		:= 19;
+		IF ErrorID <> 0 THEN
+			udiState := 999;
+		END_IF
 		
 	100 : //Abort
 		m_bBusy := FALSE;
 		bWaitingMovers := FALSE;
 		IF bEnable = FALSE THEN
+			ErrorID := 0;
 			fbMoversFIFO.m_Clear();
 			udiState := 0;
 		END_IF
 		
+	999 : //Error
+		m_bBusy := FALSE;
+		bWaitingMovers := FALSE;
+		IF bEnable = FALSE THEN
+			fbMoversFIFO.m_Clear();
+			ErrorID := 0;
+			udiState := 0;
+		END_IF
+		
 END_CASE
-Sequence2 := m_bBusy;
+Sequence2 			:= m_bBusy;
+udiSequenceState 	:= udiState;
+udiErrorID			:= ErrorID;
+m_udiErrorID		:= udiErrorID;
+
+sMoversWaiting := '';
+FOR i:= 1 TO fbMoversFIFO.nMovers DO
+	sMoversWaiting := CONCAT(sMoversWaiting, UDINT_TO_STRING(fbMoversFIFO.aMoversFIFO[i]));
+	IF i < fbMoversFIFO.nMovers THEN sMoversWaiting := CONCAT(sMoversWaiting, ', '); END_IF
+END_FOR
+sMoversIn := '';
+FOR i:= 1 TO udiNumMoversIn DO
+	sMoversIn := CONCAT(sMoversIn, UDINT_TO_STRING(aMoversIN[i]));
+	IF i < udiNumMoversIn THEN sMoversIn := concat(sMoversIn, ', '); END_IF
+END_FOR
+
 ]]></ST>
       </Implementation>
     </Method>
