@@ -101,6 +101,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"630"</v>
+              <v n="TextDefault">"HOME"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"2378"</v>
               <v n="TextDefault">"Init Done"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -183,6 +188,11 @@
             <o>
               <v n="TextID">"958"</v>
               <v n="TextDefault">"Number of Stations"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"503"</v>
+              <v n="TextDefault">"OPERATION"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>

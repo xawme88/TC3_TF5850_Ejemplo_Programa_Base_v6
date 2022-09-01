@@ -115,7 +115,10 @@ VAR
 	stCurrentCfg			: stXTSCfg;			//General Configuration
 	udiFirstMover			: UDINT;
 END_VAR
-]]></Declaration>
+VAR
+	//Visu
+	iFrameSelection			: INT;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[
 //Initialization

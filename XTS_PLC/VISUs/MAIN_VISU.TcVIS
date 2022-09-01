@@ -258,12 +258,12 @@
                               <d n="TypeNodeAttributesData" t="CaseInsensitiveHashtable" ckt="String" cvt="String">
                                 <v>Visible</v>
                                 <v>False</v>
-                                <v>DefaultArraySize</v>
-                                <v>5</v>
-                                <v>VisibleChildren</v>
-                                <v>True</v>
                                 <v>ieccodeconversion_array</v>
                                 <v></v>
+                                <v>VisibleChildren</v>
+                                <v>True</v>
+                                <v>DefaultArraySize</v>
+                                <v>5</v>
                                 <v>''NORMAL__COMMENT</v>
                                 <v> We hide this node to prevent having two References nodes
  Nevertheless we want to make sure that the children are displayed</v>
@@ -319,8 +319,8 @@
                         <o n="TypeNodeAttributes" t="TypeNodeAttributes2">
                           <v n="AttrFlags">81920UL</v>
                           <d n="TypeNodeAttributesData" t="CaseInsensitiveHashtable" ckt="String" cvt="String">
-                            <v>DisplayFrameReferencesConfiguration</v>
-                            <v></v>
+                            <v>conditionalshow</v>
+                            <v>visu_elemdev</v>
                             <v>DescriptionTextId</v>
                             <v>TL_ElementProperties.Desc_ReferencedVisus</v>
                             <v>SortFlag</v>
@@ -331,14 +331,14 @@
                             <v>Simple|Standard</v>
                             <v>DynamicArray</v>
                             <v></v>
-                            <v>conditionalshow</v>
-                            <v>visu_elemdev</v>
+                            <v>DisplayFrameReferencesConfiguration</v>
+                            <v></v>
                             <v>FrameReferences</v>
                             <v></v>
-                            <v>DisplayTextId</v>
-                            <v>TL_ElementProperties.References</v>
                             <v>Storable</v>
                             <v>True</v>
+                            <v>DisplayTextId</v>
+                            <v>TL_ElementProperties.References</v>
                           </d>
                           <v n="ConvDone">true</v>
                         </o>
@@ -498,8 +498,8 @@
           <o n="GeneratedLMMDescriptions" t="GeneratedLanguageModelEntriesData">
             <o n="GeneratedVisuFbDescription" t="GenericFbDescription">
               <d n="FbMethods" t="CaseInsensitiveHashtable_1" ckt="String" cvt="Guid">
-                <v>HasVisibilityAccess</v>
-                <v>432a6f89-ace1-4fb6-ae62-ff6f7e3d02e6</v>
+                <v>GetUpdateRects</v>
+                <v>07ef31b8-ae61-428c-bdf2-5fd0fb95a026</v>
                 <v>ContainsPoint</v>
                 <v>0fbac352-dae3-4e0b-8c07-cd2951f7479a</v>
                 <v>SetStaticState</v>
@@ -508,8 +508,6 @@
                 <v>440a4256-be3d-4407-b28e-50d6359aaeb4</v>
                 <v>GetTooltip</v>
                 <v>e6d5e5e2-44ac-458e-bccb-a884230091cc</v>
-                <v>GetUpdateRects</v>
-                <v>07ef31b8-ae61-428c-bdf2-5fd0fb95a026</v>
                 <v>GetNamespace</v>
                 <v>716989fb-c199-4929-8956-c15fdbe9e4bf</v>
                 <v>GetTranslator</v>
@@ -520,10 +518,10 @@
                 <v>1f848741-3002-4722-b340-125b4d77d2eb</v>
                 <v>GetClientData</v>
                 <v>c2459f1e-e8d8-4541-8733-bd940eba2c55</v>
-                <v>Destruct</v>
-                <v>0a017da6-7e4c-44a2-922e-c3a99c0365aa</v>
                 <v>Paint</v>
                 <v>a3da0aa9-d64f-4c3a-ac5d-ba1c5274cd90</v>
+                <v>HasVisibilityAccess</v>
+                <v>432a6f89-ace1-4fb6-ae62-ff6f7e3d02e6</v>
                 <v>GetElementArray</v>
                 <v>98ec7d4e-7b6b-4873-bfe3-09b4bc914841</v>
                 <v>SetVisuFlagsInternal</v>
@@ -542,6 +540,8 @@
                 <v>052de399-49b9-4d2b-9598-5469e0399fbf</v>
                 <v>GetSurroundingRect</v>
                 <v>2ca9f34f-c0e9-4a27-9de1-610525bf7b26</v>
+                <v>ElementInfo</v>
+                <v>931eedfc-58fb-4577-b164-4725c6e0fe41</v>
                 <v>GetLocalUsergroup</v>
                 <v>2078190c-a641-42df-8b28-e1a7a28cf430</v>
                 <v>GetName</v>
@@ -558,8 +558,8 @@
                 <v>08c2f80b-af76-4643-addb-b9c724867d15</v>
                 <v>HandleInput</v>
                 <v>3c57ab53-293f-4a73-b28b-59e9460b2ed9</v>
-                <v>ElementInfo</v>
-                <v>931eedfc-58fb-4577-b164-4725c6e0fe41</v>
+                <v>Destruct</v>
+                <v>0a017da6-7e4c-44a2-922e-c3a99c0365aa</v>
               </d>
               <v n="FbName">"NotImportant"</v>
               <v n="FbGuid">{b6f6d5f1-9655-4e79-9d72-2bc06c42051f}</v>
@@ -619,7 +619,7 @@
             </o>
             <v n="DialogDut">{72e2d663-ebf3-4c36-af02-a6f5300926ab}</v>
           </o>
-          <v n="LastUsedIdForIdentifier">4</v>
+          <v n="LastUsedIdForIdentifier">5</v>
           <o n="TextDocument" t="TextDocument">
             <a n="TextLines" cet="TextLine">
               <o>

@@ -81,7 +81,19 @@
     <Compile Include="POUs\XTS FBs\VISUs\TextList\StationAckMode_txt.TcTLO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSManualVisu.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
+    </Compile>
     <Compile Include="POUs\XTS FBs\VISUs\VI_XTSMainVisu.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSHomeVisu.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSStationsConfigurationVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
