@@ -177,30 +177,7 @@ CASE iState OF
 		
 	1 : //ReConfigure Stations
 		sLog := CONCAT('Auto: Configure stations, State: ', INT_TO_STRING(iState));
-		bAllDone := TRUE;
-		FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
-			aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
-			IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN  
-				IF aStationsOTCID[i] <> 0 THEN
-					bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCurrentCfg.udiNumStations);
-				END_IF
-			ELSIF aStationsOTCID[1] = 0 THEN
-				bAllDone := TRUE;
-			END_IF
-			IF i<stCfg.udiNumStations THEN
-					aStations[i].INextStation := aStations[i+1];	
-			ELSIF i = stCfg.udiNumStations THEN	
-					aStations[i].INextStation := aStations[1];	
-			END_IF
-		END_FOR
-		IF bAllDone THEN
-			FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
-				IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN 
-					aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
-				END_IF
-			END_FOR
-			iState := iState + 1;
-		END_IF
+		IF ConfigureStations() THEN iState := iState + 1; END_IF
 
 	2 : //Put all stations in auto mode
 		sLog := CONCAT('Auto: Put stations in auto mode, State: ', INT_TO_STRING(iState));
@@ -388,6 +365,41 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="ConfigureStations" Id="{761a1090-b788-423f-9630-14b34f05d571}" FolderPath="Utilities\">
+      <Declaration><![CDATA[METHOD ConfigureStations : BOOL
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR_INST
+	bAllDone 	: BOOL;
+	i			: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bAllDone := TRUE;
+FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
+	aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
+	IF stCfg.bNotCfgStationsViewer = FALSE THEN
+		bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCurrentCfg.udiNumStations);
+	ELSE
+		bAllDone := TRUE;
+	END_IF
+	//Configure the relationship between stations
+	IF i<stCfg.udiNumStations THEN
+			aStations[i].INextStation := aStations[i+1];	
+	ELSIF i = stCfg.udiNumStations THEN	
+			aStations[i].INextStation := aStations[1];	
+	END_IF
+END_FOR
+IF bAllDone THEN
+	FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
+		aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
+	END_FOR
+	ConfigureStations := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Enable" Id="{578eff18-54db-4044-88c4-275ff826915e}">
       <Declaration><![CDATA[METHOD PRIVATE Enable : BOOL
 VAR_INPUT
@@ -406,7 +418,7 @@ IF (bError OR bReset) AND iState <> 999 AND iState <> 60 THEN iState := 999; END
 
 CASE iState OF
 	
-	0 : 
+	0 : //Wait for Command
 		IF bEnable THEN 
 			FOR i := 1 TO udiNumMovers DO
 				ax[i].ClearCmd();
@@ -552,6 +564,7 @@ VAR_INST
 	iState 		: INT;
 	bAllDone 	: BOOL;
 	i 			: UDINT;
+	udiErrorID	: UDINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -566,7 +579,7 @@ IF bXPUInitDone = FALSE THEN
 	END_IF	
 END_IF
 
-IF (bError OR bReset) AND iState <> 999 AND bInitDone = FALSE THEN iState := 999; END_IF
+IF bReset AND iState <> 999 AND bInitDone = FALSE THEN iState := 999; END_IF
 
 CASE iState OF
 	
@@ -633,9 +646,14 @@ CASE iState OF
 		
 	31 : //Reset Group
 		sLog := 'Init: Reset group CA';
-		IF gp.reset(TRUE) THEN
+		IF gp.reset(TRUE, udiErrorID => udiErrorID) THEN
 			gp.reset(FALSE);
 			iState := iState + 1;
+		END_IF
+		IF udiErrorID <> 0 THEN
+			gp.reset(FALSE);
+			sLog := CONCAT('Init: Reset group CA Error : ', UDINT_TO_STRING(udiErrorID));
+			iState := 1000;
 		END_IF
 		
 	32 : //Disable Group in order to configure the Rail Length
@@ -742,29 +760,8 @@ CASE iState OF
 		
 	60 : //Set Stations configuration
 		sLog := 'Init: Configure stations';
-		bAllDone := TRUE;
-		FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
-			aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
-			IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN  
-				IF aStationsOTCID[i] <> 0 THEN
-					bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCfg.udiNumStations);
-				END_IF
-			ELSIF aStationsOTCID[1] = 0 THEN
-				bAllDone := TRUE;
-			END_IF
-			IF i<stCfg.udiNumStations THEN
-					aStations[i].INextStation := aStations[i+1];	
-			ELSIF i = stCfg.udiNumStations THEN	
-					aStations[i].INextStation := aStations[1];	
-			END_IF
-		END_FOR
-		IF bAllDone THEN
+		IF ConfigureStations() THEN
 			stVisuStationsCfg := stCfg.stStationsCfg;
-			FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
-				IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN 
-					aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
-				END_IF
-			END_FOR
 			iState := iState + 10;
 		END_IF
 		
@@ -776,8 +773,11 @@ CASE iState OF
 	71 :
 		//
 		
-	999: 
+	999: //Abort
 		sLog := CONCAT('Init: Abort, State: ', INT_TO_STRING(iState));
+		iState := 0;
+		
+	1000 : //Error
 		iState := 0;
 			 
 END_CASE
@@ -935,25 +935,7 @@ CASE iState OF
 	70 : //Teach Station
 		sLog := CONCAT('Manual: Teaching station: ', INT_TO_STRING(iState));
 		stCfg.stStationsCfg[m_udiStationSelection].lrStopPosition[udiStopPositionSelection] := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos-stCfg.stStationsCfg[m_udiStationSelection].lrStartPosition;
-		bAllDone := TRUE;	
-		FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
-			aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
-			IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN  
-				IF aStationsOTCID[i] <> 0 THEN
-					bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCfg.udiNumStations);
-				END_IF
-			ELSIF aStationsOTCID[1] = 0 THEN
-				bAllDone := TRUE;
-			END_IF
-		END_FOR
-		IF bAllDone THEN
-			FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
-				IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation > 0 AND Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN 
-					aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
-				END_IF
-			END_FOR
-			iState := iState + 1;
-		END_IF
+		IF ConfigureStations() THEN iState := iState + 1; END_IF
 		
 	71 : //Apply New Configuration
 		sLog := CONCAT('Manual: Teaching done: ', INT_TO_STRING(iState));

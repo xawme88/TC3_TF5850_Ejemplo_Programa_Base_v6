@@ -2047,7 +2047,6 @@ External Setpoint Generation:
 	<Axis Id="1" CreateSymbols="true" AxisType="1">
 		<Name>__FILENAME__</Name>
 		<AxisPara>
-			<General UnitFlags="#x00000004"/>
 			<Dynamic AccelerationMaximum="80000" DecelerationMaximum="80000" Acceleration="20000" Deceleration="20000" Jerk="200000"/>
 			<Velo Maximum="4000"/>
 			<PositionAreaControl Enable="false"/>

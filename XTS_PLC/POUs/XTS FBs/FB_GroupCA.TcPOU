@@ -191,11 +191,13 @@ halt				:= fbHalt.Done;
 VAR_INPUT
 	bREset : BOOL;
 END_VAR
-]]></Declaration>
+VAR_OUTPUT
+	udiErrorID : UDINT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbReset.Execute := bREset;
 reset			:= fbReset.Done;
-]]></ST>
+udiErrorID		:= fbReset.ErrorId;]]></ST>
       </Implementation>
     </Method>
     <Method Name="ungroupall" Id="{c4d04756-20dc-4d04-9707-7855a191fb37}">

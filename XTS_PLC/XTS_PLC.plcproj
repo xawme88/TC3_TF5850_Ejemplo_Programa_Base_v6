@@ -89,7 +89,7 @@
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSHomeVisu.TcVIS">
+    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSRunTimeVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
@@ -97,11 +97,7 @@
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSStationsVisu.TcVIS">
-      <SubType>Code</SubType>
-      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSMoversVisu.TcVIS">
+    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSMoversConfigurationVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
@@ -109,7 +105,7 @@
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSStationsRuntimeVisu.TcVIS">
+    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSAutoVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>

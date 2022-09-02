@@ -36,6 +36,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"935"</v>
+              <v n="TextDefault">"Actual Waiting Time"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"772"</v>
               <v n="TextDefault">"AllStandStill"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -141,8 +146,18 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"309"</v>
+              <v n="TextDefault">"JOGGING"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"124"</v>
               <v n="TextDefault">"Log: %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"215"</v>
+              <v n="TextDefault">"M. Ack"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -206,6 +221,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"235"</v>
+              <v n="TextDefault">"Not Configure Viewer"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"270"</v>
               <v n="TextDefault">"Num Stop Positions"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -226,6 +246,16 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"929"</v>
+              <v n="TextDefault">"POSITION"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"880"</v>
+              <v n="TextDefault">"Process Time"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"269"</v>
               <v n="TextDefault">"Processing Time"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -233,6 +263,11 @@
             <o>
               <v n="TextID">"176"</v>
               <v n="TextDefault">"RESET"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"394"</v>
+              <v n="TextDefault">"RESULTS"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -291,6 +326,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"579"</v>
+              <v n="TextDefault">"TEACH"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"3087"</v>
               <v n="TextDefault">"TEACH STATION"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -298,6 +338,11 @@
             <o>
               <v n="TextID">"271"</v>
               <v n="TextDefault">"Travel Time"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"261"</v>
+              <v n="TextDefault">"Waiting Time"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
           </l>
