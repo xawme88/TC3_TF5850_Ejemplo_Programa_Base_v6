@@ -245,11 +245,6 @@
       <SubType>Content</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <SubObject Include="FB_Mover.Sequence1">
-      <ExcludeFromBuild>true</ExcludeFromBuild>
-    </SubObject>
-  </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>

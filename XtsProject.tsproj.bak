@@ -72060,11 +72060,11 @@
 								<Parameter ShowSubItems="true" Group="General">
 									<Name>StopPositions</Name>
 									<Comment><![CDATA[Gets/sets the stop positions. The valid range starts from 0 mm to the total length of all configured parts.]]></Comment>
-									<BitSize>64</BitSize>
+									<BitSize>192</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
 									<ArrayInfo>
 										<LBound>0</LBound>
-										<Elements Min="0" MaxUnbounded="true">1</Elements>
+										<Elements Min="0" MaxUnbounded="true">3</Elements>
 									</ArrayInfo>
 									<Unit><![CDATA[mm]]></Unit>
 									<PTCID>#x0308028d</PTCID>
@@ -72073,11 +72073,11 @@
 								<Parameter ShowSubItems="true" Group="General">
 									<Name>PartObjectIds</Name>
 									<Comment><![CDATA[Gets/sets the parts which belong to the station.]]></Comment>
-									<BitSize>96</BitSize>
+									<BitSize>32</BitSize>
 									<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
 									<ArrayInfo>
 										<LBound>0</LBound>
-										<Elements Min="1" MaxUnbounded="true">3</Elements>
+										<Elements Min="1" MaxUnbounded="true">1</Elements>
 									</ArrayInfo>
 									<PTCID>#x03080224</PTCID>
 									<ContextId>1</ContextId>
@@ -72152,15 +72152,15 @@
 									<Value>150</Value>
 								</Value>
 								<Value>
+									<Name>StopPositions[1]</Name>
+									<Value>0</Value>
+								</Value>
+								<Value>
+									<Name>StopPositions[2]</Name>
+									<Value>0</Value>
+								</Value>
+								<Value>
 									<Name>PartObjectIds[0]</Name>
-									<Value>16842960</Value>
-								</Value>
-								<Value>
-									<Name>PartObjectIds[1]</Name>
-									<Value>16842960</Value>
-								</Value>
-								<Value>
-									<Name>PartObjectIds[2]</Name>
 									<Value>16842960</Value>
 								</Value>
 								<Value>
@@ -72268,7 +72268,7 @@
 									<PTCID>#x03080274</PTCID>
 									<ContextId>1</ContextId>
 								</Parameter>
-								<Parameter Group="General">
+								<Parameter ShowSubItems="true" Group="General">
 									<Name>StopPositions</Name>
 									<Comment><![CDATA[Gets/sets the stop positions. The valid range starts from 0 mm to the total length of all configured parts.]]></Comment>
 									<BitSize>192</BitSize>
@@ -72479,7 +72479,7 @@
 									<PTCID>#x03080274</PTCID>
 									<ContextId>1</ContextId>
 								</Parameter>
-								<Parameter Group="General">
+								<Parameter ShowSubItems="true" Group="General">
 									<Name>StopPositions</Name>
 									<Comment><![CDATA[Gets/sets the stop positions. The valid range starts from 0 mm to the total length of all configured parts.]]></Comment>
 									<BitSize>192</BitSize>
@@ -72690,7 +72690,7 @@
 									<PTCID>#x03080274</PTCID>
 									<ContextId>1</ContextId>
 								</Parameter>
-								<Parameter Group="General">
+								<Parameter ShowSubItems="true" Group="General">
 									<Name>StopPositions</Name>
 									<Comment><![CDATA[Gets/sets the stop positions. The valid range starts from 0 mm to the total length of all configured parts.]]></Comment>
 									<BitSize>192</BitSize>
@@ -72901,7 +72901,7 @@
 									<PTCID>#x03080274</PTCID>
 									<ContextId>1</ContextId>
 								</Parameter>
-								<Parameter Group="General">
+								<Parameter ShowSubItems="true" Group="General">
 									<Name>StopPositions</Name>
 									<Comment><![CDATA[Gets/sets the stop positions. The valid range starts from 0 mm to the total length of all configured parts.]]></Comment>
 									<BitSize>192</BitSize>

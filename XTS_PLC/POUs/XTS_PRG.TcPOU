@@ -123,7 +123,7 @@ XTSSYSTEM();]]></ST>
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">196L</v>
+                          <v n="Id">198L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems" cet="Operand">
@@ -222,7 +222,7 @@ XTSSYSTEM();]]></ST>
                               <v n="LValue">true</v>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">133L</v>
+                              <v n="Id">200L</v>
                             </o>
                             <o>
                               <v n="Operand">""</v>
@@ -238,7 +238,7 @@ XTSSYSTEM();]]></ST>
                               <v n="LValue">true</v>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">191L</v>
+                              <v n="Id">133L</v>
                             </o>
                             <o>
                               <v n="Operand">""</v>
@@ -463,6 +463,22 @@ XTSSYSTEM();]]></ST>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
                               <v n="Id">93L</v>
+                            </o>
+                            <o>
+                              <v n="Operand">""</v>
+                              <v n="Type">"Tc3_XTS_Utility.MoverType"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">true</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">201L</v>
                             </o>
                             <o>
                               <v n="Operand">""</v>
@@ -748,25 +764,6 @@ XTSSYSTEM();]]></ST>
                               <v n="LValue">false</v>
                               <v n="Boolean">true</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">195L</v>
-                            </o>
-                            <v n="Id">194L</v>
-                          </o>
-                          <o>
-                            <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <v n="Type">"BOOL"</v>
-                              <v n="Comment">""</v>
-                              <v n="SymbolComment">""</v>
-                              <v n="Address">""</v>
-                              <o n="Flags" t="Flags">
-                                <v n="Flags">0</v>
-                                <v n="Fixed">false</v>
-                                <v n="Extensible">false</v>
-                              </o>
-                              <v n="LValue">false</v>
-                              <v n="Boolean">true</v>
-                              <v n="IsInstance">false</v>
                               <v n="Id">151L</v>
                             </o>
                             <v n="Id">150L</v>
@@ -900,7 +897,6 @@ XTSSYSTEM();]]></ST>
                             <v>bManualMove</v>
                             <v>bTeachStation</v>
                             <v>bAutomatic</v>
-                            <v>bApplyConfiguration</v>
                             <v>lrTargetPosition</v>
                             <v>lrTargetVelocity</v>
                             <v>stCfg</v>
@@ -917,7 +913,6 @@ XTSSYSTEM();]]></ST>
                             <v>UDINT</v>
                             <v>UDINT</v>
                             <v>UDINT</v>
-                            <v>BOOL</v>
                             <v>BOOL</v>
                             <v>BOOL</v>
                             <v>BOOL</v>
@@ -940,8 +935,8 @@ XTSSYSTEM();]]></ST>
                             <v>bReadyForMotion</v>
                             <v>bEnabled</v>
                             <v>bInManual</v>
+                            <v>bTeachDone</v>
                             <v>bInAutomatic</v>
-                            <v>bConfigurationDone</v>
                             <v>bInitDone</v>
                             <v>bMover1DetectionValid</v>
                             <v>iOperationMode</v>
@@ -956,6 +951,7 @@ XTSSYSTEM();]]></ST>
                             <v>lrPart1Length</v>
                             <v>udiNumMovers</v>
                             <v>udiPart1NumModules</v>
+                            <v>eMoverType</v>
                             <v>eGroupState</v>
                             <v>bAllMoversStandStill</v>
                           </l2>
@@ -982,6 +978,7 @@ XTSSYSTEM();]]></ST>
                             <v>LREAL</v>
                             <v>UDINT</v>
                             <v>UDINT</v>
+                            <v>Tc3_XTS_Utility.MoverType</v>
                             <v>MC_GROUP_STATE</v>
                             <v>BOOL</v>
                           </l2>
@@ -992,7 +989,7 @@ XTSSYSTEM();]]></ST>
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">197L</v>
+                        <v n="Id">199L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />

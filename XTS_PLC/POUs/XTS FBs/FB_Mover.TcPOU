@@ -176,7 +176,6 @@ udiID := stParameter.AxisId;
     </Implementation>
     <Folder Name="Configuration" Id="{bdeb40fe-f4b4-49ca-ab11-33f2a775663d}" />
     <Folder Name="Functionaltities" Id="{564597fa-0109-4822-9f9a-112a54e21ea4}" />
-    <Folder Name="Sequences" Id="{f185f7ae-204c-49b5-b2a6-6f4aee3a3773}" />
     <Method Name="add2Group" Id="{1cd80238-7ce7-476e-b921-ac285ff68501}" FolderPath="Functionaltities\">
       <Declaration><![CDATA[METHOD add2Group : BOOL
 VAR_INPUT
@@ -559,63 +558,6 @@ END_VAR
         <ST><![CDATA[fbReset.Execute			:= bExecute;
 reset					:= fbReset.Done;
 ]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="Sequence1" Id="{95171de9-70bf-45b3-b080-b8e85de9059f}" FolderPath="Sequences\">
-      <Declaration><![CDATA[METHOD Sequence1 : BOOL
-VAR_INPUT
-	bEnable 		: BOOL;
-	udiNumStations : UDINT;
-END_VAR
-VAR_INST
-	iState 		: INT;
-	iStation 	: INT;
-	oTON		: TON;
-	bBusy		: BOOL;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[
-CASE iState OF
-
-	0 : //Idle
-		bBusy := FALSE;
-		IF bEnable THEN
-			iState := iState + 10;
-			bBusy := TRUE;
-			iStation := 1;
-			moveca_bytime(FALSE, 0.0, 0.0);
-		END_IF
-
-	10 : //Send Mover to Stop position
-		 IF moveca_bytime(TRUE, aStations[iStation].stCfg.lrStartPosition + aStations[iStation].stCfg.lrStopPosition[1], aStations[iStation].stCfg.lrTravelTime) THEN
-			 moveca_bytime(FALSE, aStations[iStation].stCfg.lrStartPosition + aStations[iStation].stCfg.lrStopPosition[1], aStations[iStation].stCfg.lrTravelTime);
-			 iState := iState + 10;
-		 END_IF
-		 IF bEnable = FALSE THEN iState := 0; END_IF
-		 
-	20 : //Wait handshake Stations
-		 IF aStations[iStation].Sequence1(TRUE) THEN
-			 aStations[iStation].Sequence1(FALSE);
-			 iState := iState + 10;
-		 END_IF
-		 IF bEnable = FALSE THEN iState := 0; END_IF
-		 	
-	30 : //Go to Next Stations
-		 iStation := iStation + 1;
-		 IF INT_TO_UDINT(iStation) = udiNumStations+1 THEN iStation := 1; END_IF
-		 iState := SEL(bEnable, 0, 10);
-
- END_CASE
- Sequence1 := bBusy;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="Sequence2" Id="{d26693c1-f917-4124-849d-01e3b3204b03}" FolderPath="Sequences\">
-      <Declaration><![CDATA[METHOD Sequence2 : BOOL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
     <Method Name="standstill" Id="{008adc15-4883-4f53-befa-8735f3ab6c0f}" FolderPath="Functionaltities\">

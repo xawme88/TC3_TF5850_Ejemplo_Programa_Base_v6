@@ -14,7 +14,7 @@ VAR_INPUT
 {attribute 'pingroup' := 'Manual'}
 	udiStationSelection		: UDINT := 0;		//Target Station ID for mover selected. If zero manual mode works with target position input
 {attribute 'pingroup' := 'Manual'}
-	udiStopPositionSelection: UDINT := 1;		//Target Stop Position 1, 2 or 3
+	udiStopPositionSelection: UDINT := 1;		//Stop position selection 1, 2 or 3
 {attribute 'pingroup' := 'Manual'}
 	bJogForward				: BOOL;				//Jog Forward command for manual mode operation 0
 {attribute 'pingroup' := 'Manual'}
@@ -380,7 +380,9 @@ END_VAR]]></Declaration>
 FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
 	aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
 	IF stCfg.bNotCfgStationsViewer = FALSE THEN
-		bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > stCurrentCfg.udiNumStations);
+		IF aStationsOTCID[i] <> 0 THEN
+			bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > SEL(stCurrentCfg.udiNumStations=0, stCurrentCfg.udiNumStations, stCfg.udiNumStations));
+		END_IF
 	ELSE
 		bAllDone := TRUE;
 	END_IF
@@ -868,7 +870,7 @@ CASE iState OF
 		
 		IF iVisuMoverSelection > 0 THEN udiMoverSelection := INT_TO_UDINT(iVisuMoverSelection); ELSE udiMoverSelection := 0; END_IF
 		IF iVisuStationSelection > 0 THEN udiStationSelection := INT_TO_UDINT(iVisuStationSelection); ELSE udiStationSelection := 0; END_IF
-		IF iVisuStopPositionSelection > 0 THEN udiStopPositionSelection	:= INT_TO_UDINT(iVisuStopPositionSelection-1); ELSE udiStopPositionSelection := 0; END_IF
+		IF iVisuStopPositionSelection > 0 THEN udiStopPositionSelection	:= INT_TO_UDINT(iVisuStopPositionSelection); ELSE udiStopPositionSelection := 0; END_IF
 		
 		IF bEnable = FALSE THEN
 			iState := 100;
@@ -877,10 +879,10 @@ CASE iState OF
 		ELSIF bManualMove AND udiStationSelection = 0 THEN
 			//Move All with Target Position
 			iState := 50; 
-		ELSIF bManualMove AND udiStationSelection > 0 AND udiStationSelection < stCfg.udiNumStations+1 AND udiStopPositionSelection > 0 AND udiStopPositionSelection < 4 THEN
+		ELSIF bManualMove AND udiStationSelection > 0 AND udiStationSelection < stCfg.udiNumStations+1 AND udiStopPositionSelection > 0 AND udiStopPositionSelection < 6 THEN
 			//Move Mover to Station 
 			iState := 60;
-		ELSIF bTeachStation AND udiStationSelection > 0 AND udiMoverSelection > 0 AND udiStopPositionSelection > 0 AND udiStopPositionSelection < 4 THEN
+		ELSIF bTeachStation AND udiStationSelection > 0 AND udiMoverSelection > 0 AND udiStopPositionSelection > 0 AND udiStopPositionSelection < 6 THEN
 			m_udiStationSelection := udiStationSelection;
 			iState := 70;
 		END_IF
@@ -921,12 +923,25 @@ CASE iState OF
 		sLog := CONCAT('Manual: Go to station: ', INT_TO_STRING(iState));
 		IF udiMoverSelection = 0 THEN
 			FOR i := 1 TO udiNumMovers DO
-				ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);
+				IF udiStopPositionSelection = 0 THEN
+					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);		
+				ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
+					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection-1] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);					
+				ELSIF udiStopPositionSelection = 5 THEN
+					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrEndPosition, lrTargetVelocity, Direction);	
+				END_IF
 			END_FOR
 			IF bAllMoversStandStill AND bManualMove = FALSE THEN
 				iState := 1;
 			END_IF
-		ELSE ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);
+		ELSE 
+			IF udiStopPositionSelection = 0 THEN
+				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);		
+			ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
+				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection-1] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);					
+			ELSIF udiStopPositionSelection = 5 THEN
+				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrEndPosition, lrTargetVelocity, Direction);	
+			END_IF
 			IF bAllMoversStandStill AND bManualMove = FALSE THEN
 				iState := 1;
 			END_IF
@@ -934,7 +949,13 @@ CASE iState OF
 		
 	70 : //Teach Station
 		sLog := CONCAT('Manual: Teaching station: ', INT_TO_STRING(iState));
-		stCfg.stStationsCfg[m_udiStationSelection].lrStopPosition[udiStopPositionSelection] := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos-stCfg.stStationsCfg[m_udiStationSelection].lrStartPosition;
+		IF udiStopPositionSelection = 1 THEN
+			stCfg.stStationsCfg[m_udiStationSelection].lrStartPosition := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos;		
+		ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
+			stCfg.stStationsCfg[m_udiStationSelection].lrStopPosition[udiStopPositionSelection-1] := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos-stCfg.stStationsCfg[m_udiStationSelection].lrStartPosition;					
+		ELSIF udiStopPositionSelection = 5 THEN
+			stCfg.stStationsCfg[m_udiStationSelection].lrEndPosition := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos;			
+		END_IF
 		IF ConfigureStations() THEN iState := iState + 1; END_IF
 		
 	71 : //Apply New Configuration

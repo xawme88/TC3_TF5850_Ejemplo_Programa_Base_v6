@@ -104,7 +104,7 @@
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">1134</v>
+                      <v n="Value" t="Int16">1206</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
@@ -131,7 +131,7 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value">567</v>
+                      <v n="Value">603</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
@@ -537,7 +537,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_3"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="FrameSelectionChangeInputAction[]">
                   <v>OnMouseClick</v>
                   <a cet="FrameSelectionChangeInputAction">
                     <o>
@@ -745,7 +745,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_5"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="FrameSelectionChangeInputAction[]">
                   <v>OnMouseClick</v>
                   <a cet="FrameSelectionChangeInputAction">
                     <o>
@@ -2089,7 +2089,7 @@
                                 <l n="TypeNodeChildren" t="ArrayList" cet="BasicTypeNode">
                                   <o>
                                     <v n="Flags">2L</v>
-                                    <n n="BasicTypeNodeValue" />
+                                    <v n="BasicTypeNodeValue">"xts"</v>
                                     <v n="BasicTypeNodeAcceptsExpression">true</v>
                                     <n n="BasicTypeNodeFastAccess" />
                                     <a n="BasicTypeNodeEnumValues" et="String" />
@@ -2214,12 +2214,12 @@
                               <d n="TypeNodeAttributesData" t="CaseInsensitiveHashtable" ckt="String" cvt="String">
                                 <v>Visible</v>
                                 <v>False</v>
-                                <v>DefaultArraySize</v>
-                                <v>5</v>
-                                <v>VisibleChildren</v>
-                                <v>True</v>
                                 <v>ieccodeconversion_array</v>
                                 <v></v>
+                                <v>VisibleChildren</v>
+                                <v>True</v>
+                                <v>DefaultArraySize</v>
+                                <v>5</v>
                                 <v>''NORMAL__COMMENT</v>
                                 <v> We hide this node to prevent having two References nodes
  Nevertheless we want to make sure that the children are displayed</v>
@@ -2275,8 +2275,8 @@
                         <o n="TypeNodeAttributes" t="TypeNodeAttributes2">
                           <v n="AttrFlags">81920UL</v>
                           <d n="TypeNodeAttributesData" t="CaseInsensitiveHashtable" ckt="String" cvt="String">
-                            <v>DisplayFrameReferencesConfiguration</v>
-                            <v></v>
+                            <v>conditionalshow</v>
+                            <v>visu_elemdev</v>
                             <v>DescriptionTextId</v>
                             <v>TL_ElementProperties.Desc_ReferencedVisus</v>
                             <v>SortFlag</v>
@@ -2287,14 +2287,14 @@
                             <v>Simple|Standard</v>
                             <v>DynamicArray</v>
                             <v></v>
-                            <v>conditionalshow</v>
-                            <v>visu_elemdev</v>
+                            <v>DisplayFrameReferencesConfiguration</v>
+                            <v></v>
                             <v>FrameReferences</v>
                             <v></v>
-                            <v>DisplayTextId</v>
-                            <v>TL_ElementProperties.References</v>
                             <v>Storable</v>
                             <v>True</v>
+                            <v>DisplayTextId</v>
+                            <v>TL_ElementProperties.References</v>
                           </d>
                           <v n="ConvDone">true</v>
                         </o>
@@ -2788,10 +2788,10 @@
               <d n="FbMethods" t="CaseInsensitiveHashtable_1" ckt="String" cvt="Guid">
                 <v>FB_Init</v>
                 <v>d6001366-9b94-4adb-8eb0-656ad7093310</v>
-                <v>FB_Exit</v>
-                <v>638d7526-44a8-475c-a570-0ea446b0ef4d</v>
                 <v>FB_Reinit</v>
                 <v>2fef00ff-aec6-4fac-84d5-6b3d1517209a</v>
+                <v>FB_Exit</v>
+                <v>638d7526-44a8-475c-a570-0ea446b0ef4d</v>
               </d>
               <v n="FbName">"NotImportant"</v>
               <v n="FbGuid">{1b4bcef2-aade-4295-960a-5ee203ce4bf9}</v>
@@ -2877,12 +2877,12 @@
             <d2 n="Size" ckt="Int32" cvt="VisualObjectSize">
               <v>0</v>
               <o>
-                <v n="Width">1134</v>
+                <v n="Width">1206</v>
                 <v n="Height">633</v>
               </o>
               <v>1</v>
               <o>
-                <v n="Width">1135</v>
+                <v n="Width">1207</v>
                 <v n="Height">634</v>
               </o>
             </d2>
@@ -2903,6 +2903,7 @@
         <Type n="Double">System.Double</Type>
         <Type n="DynamicArrayNode">{6c16f79c-dd98-4c29-b3ba-7042e3055542}</Type>
         <Type n="FrameSelectionChangeInputAction">{4df7df60-c933-4318-97d1-72bcd264f510}</Type>
+        <Type n="FrameSelectionChangeInputAction[]">_3S.CoDeSys.VisualElem.FrameSelectionChangeInputAction[], VisualElem.plugin, Version=3.5.13.32, Culture=neutral, PublicKeyToken=null</Type>
         <Type n="FrameSelectionConfigurationType">{db81f68b-f091-4287-9583-0d25d85b481a}</Type>
         <Type n="GeneratedLanguageModelEntriesData">{703465dc-4679-4ff2-bcc3-c57d0a204da3}</Type>
         <Type n="GenericFbDescription">{40d6dd8d-dfd0-493a-8e29-c9a35e1e6539}</Type>
@@ -2911,7 +2912,6 @@
         <Type n="Guid">System.Guid</Type>
         <Type n="Hashtable">System.Collections.Hashtable</Type>
         <Type n="HotkeyConfiguration">{6b108d46-58af-4e41-a3f4-174d8f160cc4}</Type>
-        <Type n="IInputAction[]">_3S.CoDeSys.VisualElem.IInputAction[], VisualElem, Version=3.5.13.0, Culture=neutral, PublicKeyToken=null</Type>
         <Type n="InputBoxInputAction">{e8e7e747-f76f-4dee-ab1c-b9637e41ac26}</Type>
         <Type n="InputBoxInputAction[]">_3S.CoDeSys.VisualElem.InputBoxInputAction[], VisualElem.plugin, Version=3.5.13.32, Culture=neutral, PublicKeyToken=null</Type>
         <Type n="Int16">System.Int16</Type>

@@ -104,7 +104,7 @@
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">1134</v>
+                      <v n="Value" t="Int16">1206</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
@@ -131,7 +131,7 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value">567</v>
+                      <v n="Value">603</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
@@ -332,7 +332,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_99"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="STSnippetInputAction[]">
                   <v>OnMouseClick</v>
                   <a cet="STSnippetInputAction">
                     <o>
@@ -1601,10 +1601,10 @@
               <d n="FbMethods" t="CaseInsensitiveHashtable_1" ckt="String" cvt="Guid">
                 <v>FB_Init</v>
                 <v>0fe8bbe4-7cd7-4fce-850c-669b3b1e37bf</v>
-                <v>FB_Exit</v>
-                <v>7d5c227e-007e-4325-81c4-fa5b2081e51f</v>
                 <v>FB_Reinit</v>
                 <v>89552f15-18b4-4de6-b887-27f77ab41d69</v>
+                <v>FB_Exit</v>
+                <v>7d5c227e-007e-4325-81c4-fa5b2081e51f</v>
               </d>
               <v n="FbName">"NotImportant"</v>
               <v n="FbGuid">{44c261a9-dd72-49b9-aacf-5b0b812e3f82}</v>
@@ -1690,12 +1690,12 @@
             <d2 n="Size" ckt="Int32" cvt="VisualObjectSize">
               <v>0</v>
               <o>
-                <v n="Width">1134</v>
+                <v n="Width">1206</v>
                 <v n="Height">1038</v>
               </o>
               <v>1</v>
               <o>
-                <v n="Width">1135</v>
+                <v n="Width">1207</v>
                 <v n="Height">1038</v>
               </o>
             </d2>
@@ -1719,7 +1719,6 @@
         <Type n="Guid">System.Guid</Type>
         <Type n="Hashtable">System.Collections.Hashtable</Type>
         <Type n="HotkeyConfiguration">{6b108d46-58af-4e41-a3f4-174d8f160cc4}</Type>
-        <Type n="IInputAction[]">_3S.CoDeSys.VisualElem.IInputAction[], VisualElem, Version=3.5.13.0, Culture=neutral, PublicKeyToken=null</Type>
         <Type n="Int16">System.Int16</Type>
         <Type n="Int32">System.Int32</Type>
         <Type n="Int64">System.Int64</Type>
