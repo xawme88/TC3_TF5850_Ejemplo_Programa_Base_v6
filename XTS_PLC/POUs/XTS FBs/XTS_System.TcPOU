@@ -923,7 +923,7 @@ CASE iState OF
 		sLog := CONCAT('Manual: Go to station: ', INT_TO_STRING(iState));
 		IF udiMoverSelection = 0 THEN
 			FOR i := 1 TO udiNumMovers DO
-				IF udiStopPositionSelection = 0 THEN
+				IF udiStopPositionSelection = 1 THEN
 					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);		
 				ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
 					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection-1] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);					
@@ -935,7 +935,7 @@ CASE iState OF
 				iState := 1;
 			END_IF
 		ELSE 
-			IF udiStopPositionSelection = 0 THEN
+			IF udiStopPositionSelection = 1 THEN
 				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);		
 			ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
 				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection-1] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);					
