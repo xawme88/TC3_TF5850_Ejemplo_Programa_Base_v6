@@ -1,0 +1,1152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="XTS_System" Id="{5ae7c6ed-3ba0-43e2-9653-91dd93f1278b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK XTS_System
+VAR_INPUT
+{attribute 'pingroup' := 'Power'}
+	bEnable					: BOOL := FALSE;	//Enable operation (power movers, group all ...)
+{attribute 'pingroup' := 'Power'}
+	bReset					: BOOL := FALSE;	//Reset all axis
+{attribute 'pingroup' := 'Manual'}
+	bManual					: BOOL;				//Manual operation mode for movers test with collision avoidance
+{attribute 'pingroup' := 'Manual'}
+	udiMoverSelection		: UDINT := 0;		//Mover ID to move in manual mode. If ID is equal to zero all movers are moved
+{attribute 'pingroup' := 'Manual'}
+	udiStationSelection		: UDINT := 0;		//Target Station ID for mover selected. If zero manual mode works with target position input
+{attribute 'pingroup' := 'Manual'}
+	udiStopPositionSelection: UDINT := 1;		//Stop position selection 1, 2 or 3
+{attribute 'pingroup' := 'Manual'}
+	bJogForward				: BOOL;				//Jog Forward command for manual mode operation 0
+{attribute 'pingroup' := 'Manual'}
+	bJogBackwards			: BOOL;				//Jog Backwards command for manual mode operation 0
+{attribute 'pingroup' := 'Manual'}
+	bManualMove				: BOOL;				//Move selected mover to target position at target velocity in manual mode operation 1
+{attribute 'pingroup' := 'Manual'}
+	bTeachStation			: BOOL;				//During manual mode flag up of teach station set the stop position of station equal to act mover position
+{attribute 'pingroup' := 'Automatic'}
+	bAutomatic				: BOOL;				//Automatic operation using stations
+{attribute 'pingroup' := 'Profile'}
+	lrTargetPosition		: LREAL := 0.0;		//Target Position [mm]
+{attribute 'pingroup' := 'Profile'}
+	lrTargetVelocity		: LREAL := 500.0;	//Target Velocity [mm]
+{attribute 'pingroup' := 'Configuration'}
+	stCfg					: stXTSCfg;			//General Configuration
+{attribute 'pingroup' := 'Profile'}
+	Direction				: tc3_mc3definitions.MC_DIRECTION := tc3_mc3definitions.MC_DIRECTION.mcDirectionPositive;	//Movement Direction	
+{attribute 'pingroup' := 'SubElements'}
+	ax						: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF FB_Mover;	//Movers
+{attribute 'pingroup' := 'SubElements'}
+	gp						: FB_GroupCA; //Group CA
+{attribute 'pingroup' := 'SubElements'}
+	aStations				: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation] OF FB_Station; //Stations
+END_VAR
+VAR_OUTPUT
+{attribute 'pingroup' := 'Status'}
+	sLog			 			: STRING := 'Invalid';
+{attribute 'pingroup' := 'Status'}
+	bError			 			: BOOL;
+{attribute 'pingroup' := 'Status'}
+	bReadyForMotion 			: BOOL;
+{attribute 'pingroup' := 'Status'}
+	bEnabled					: BOOL;
+{attribute 'pingroup' := 'Manual'}
+	bInManual					: BOOL;
+{attribute 'pingroup' := 'Manual'}
+	bTeachDone					: BOOL;
+{attribute 'pingroup' := 'Automatic'}
+	bInAutomatic				: BOOL;
+{attribute 'pingroup' := 'XPU'}
+	bInitDone					: BOOL;
+{attribute 'pingroup' := 'XPU'}
+	bMover1DetectionValid 		: BOOL;
+{attribute 'pingroup' := 'XPU'}
+	iOperationMode 				: OperationMode;
+{attribute 'pingroup' := 'XPU'}
+	AreAllPositionValid 		: BOOL;
+{attribute 'pingroup' := 'XPU'}
+	DetectedMoverCount 			: UDINT;
+{attribute 'pingroup' := 'XPU'}
+	ExpectedMoverCount 			: UDINT;
+{attribute 'pingroup' := 'XPU'}
+	HasMoverIdDetectorError		: BOOL;
+{attribute 'pingroup' := 'XPU'}
+	IsMoverIdDetectorActive		: BOOL;
+{attribute 'pingroup' := 'XPU'}
+	IsMoverIsDetectionValid		: BOOL;
+{attribute 'pingroup' := 'XPU'}
+	TrackCount					: UDINT;	
+{attribute 'pingroup' := 'XPU'}
+	PartCount					: UDINT;				
+{attribute 'pingroup' := 'XPU'}
+	lrPart1Length 				: LREAL;
+{attribute 'pingroup' := 'XPU'}
+	udiNumMovers  				: UDINT;
+{attribute 'pingroup' := 'XPU'}
+	udiPart1NumModules			: UDINT;
+{attribute 'pingroup' := 'XPU'}
+	eMoverType					: Tc3_XTS_Utility.MoverType;
+{attribute 'pingroup' := 'GROUP CA'}
+	eGroupState					: MC_GROUP_STATE;
+{attribute 'pingroup' := 'GROUP CA'}
+	bAllMoversStandStill		: BOOL;	
+END_VAR
+VAR
+	(* XPU *)
+	//{attribute 'hide'} 
+	fbXTSEnv		 		: FB_TcIoXtsEnvironment;
+	//{attribute 'hide'} 
+	IXPU			 		: I_TcIoXtsProcessingUnit;
+	//{attribute 'hide'} 
+	IPart1			 		: I_TcIoXtsXpuPart;
+	//{attribute 'hide'} 
+	fbInfoServer			: FB_TcIoXtsInfoServer;
+	//{attribute 'hide'} 
+	aInfoServerOids			: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer] OF Tc3_XTS_Utility.OTCID;
+	//{attribute 'hide'} 
+	aStationsOTCID			: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation] OF Tc3_XTS_Utility.OTCID;
+	//{attribute 'hide'} 
+	aMoversOids				: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF Tc3_XTS_Utility.OTCID;
+	//{attribute 'hide'} 
+	GroupCAOTCID			: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsCaGroup] OF Tc3_XTS_Utility.OTCID;
+END_VAR
+VAR
+	bXPUInitDone			: BOOL;
+	stVisuStationsCfg 		: ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation] OF stStationCfg;
+	stCurrentCfg			: stXTSCfg;			//General Configuration
+	udiFirstMover			: UDINT;
+END_VAR
+VAR
+	//Visu
+	iFrameSelection				: INT;
+	iVisuMoverSelection			: INT := 1;		//Mover ID to move in manual mode. If ID is equal to zero all movers are moved
+	iVisuStationSelection		: INT := 1;		//Target Station ID for mover selected. If zero manual mode works with target position input
+	iVisuStopPositionSelection	: INT := 2;		//Target Stop Position 1, 2 or 3
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+]]></ST>
+    </Implementation>
+    <Folder Name="Utilities" Id="{28bd214e-36ee-4540-9db5-d878c1bab5e3}" />
+    <Method Name="Automatic" Id="{ebab7c66-0335-4ae9-8609-64912689cde4}">
+      <Declaration><![CDATA[METHOD PRIVATE Automatic : BOOL
+VAR_INPUT
+	bEnable : BOOL;
+END_VAR
+VAR_INST
+	iState 		: INT;
+	bAllDone 	: BOOL;
+	i 			: UDINT;
+	bBusy		: BOOL;
+	udiErrorID	: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+//Error managment
+IF (bError OR bReset) AND iState <> 999 AND bBusy = TRUE THEN iState := 999; END_IF
+
+CASE iState OF
+	
+	0 : IF bEnable THEN 
+			stCurrentCfg := stCfg;
+			//Reset all command
+			FOR i:= 1 TO udiNumMovers DO
+				ax[i].clearCmd();
+			END_FOR
+			iState := iState + 1; 
+			bBusy  := TRUE;
+		END_IF
+		
+	1 : //ReConfigure Stations
+		sLog := CONCAT('Auto: Configure stations, State: ', INT_TO_STRING(iState));
+		IF ConfigureStations() THEN iState := iState + 1; END_IF
+
+	2 : //Put all stations in auto mode
+		sLog := CONCAT('Auto: starting Stations secuence, State: ', INT_TO_STRING(iState));
+		bAllDOne := TRUE;
+		FOR i:= 1 TO stCurrentCfg.udiNumStations DO
+			bAllDone := bAllDOne AND aStations[i].Start();
+			IF udiErrorID <> 0 THEN
+				sLog := '';
+				sLog := CONCAT('Auto: Error in station: ', UDINT_TO_STRING(i));
+				iState := 1000;		
+			END_IF
+		END_FOR
+		IF bAllDone THEN iState := iState + 1; END_IF
+		IF bEnable = FALSE THEN iState := 100; END_IF
+		
+	3 : //Move all to zero position
+		sLog := CONCAT('Auto: Move movers to start position, State: ', INT_TO_STRING(iState));
+		bAllDOne := FALSE;
+		FOR i:= 1 TO udiNumMovers DO
+			IF stCurrentCfg.udiMoverMode <> 1 THEN
+				bAllDone := bAllDOne OR ax[i].moveca_gap(TRUE, 0.0, 1000.0, stCurrentCfg.lrMoverDistance).bDone;
+			ELSE
+				bAllDone := bAllDOne OR ax[i].moveca(TRUE, 0.0, 1000.0).bDone;
+			END_IF
+		END_FOR
+		IF bAllMoversStandStill AND bAllDone THEN
+			udiFirstMover := WhoIsAtPos(0.0);
+			FOR i:= 1 TO udiNumMovers DO
+				ax[i].moveca(FALSE, 0.1, 0.0);
+			END_FOR
+			IF udiFirstMover <> 0 THEN
+				iState := iState + 1;
+			END_IF
+		END_IF
+		IF bEnable = FALSE THEN 
+			iState := 100; 
+		END_IF
+		
+	4 : //Gear in passive movers
+		sLog := CONCAT('Auto: Gear in passive movers, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i:= 1 TO udiNumMovers DO
+			IF IsPassiveMover(i) THEN
+				IF ax[1].bMoverInverted = FALSE THEN 
+					bAllDone := bAllDone AND ax[i].gearIn(TRUE, 1, 1, ax[SEL(i = udiNumMovers, i+1, 1)].p_Axis).bDone;
+					IF udiErrorID <> 0 THEN
+						sLog := '';
+						sLog := CONCAT('Auto: Error Gear in axis: ', UDINT_TO_STRING(i));
+						iState := 1000;		
+					END_IF
+				ELSE
+					bAllDone := bAllDone AND ax[i].gearIn(TRUE, 1, 1, ax[SEL(i = 1, i-1, udiNumMovers)].p_Axis).bDone;
+					IF udiErrorID <> 0 THEN
+						sLog := '';
+						sLog := CONCAT('Auto: Error Gear in axis: ', UDINT_TO_STRING(i));
+						iState := 1000;		
+					END_IF
+				END_IF
+			END_IF
+		END_FOR
+		IF bAllDone THEN
+			FOR i:= 1 TO udiNumMovers DO
+				IF IsPassiveMover(i) THEN
+					bAllDone := bAllDone AND ax[i].gearIn(FALSE, 1, 1, ax[SEL(i = udiNumMovers, i+1, 1)].p_Axis).bDone;
+				END_IF
+			END_FOR
+			iState := iState + 1;
+		END_IF
+
+	5 :  //Add Movers to first station
+		sLog := CONCAT('Auto: Add Movers to first station, State: ', INT_TO_STRING(iState)); 
+		FOR i:= 1 TO udiNumMovers DO
+			IF IsPassiveMover(i) = FALSE THEN
+				aStations[1].RegisterMover(ax[i].udiID);				
+			END_IF
+		END_FOR
+		iState := iState + 1;
+	
+	6 : //Call stations auto mode
+		sLog := CONCAT('Auto: Running, State: ', INT_TO_STRING(iState));
+		bAllDOne := TRUE;
+		(*FOR i:= 1 TO stCurrentCfg.udiNumStations DO
+			bAllDone := bAllDOne AND aStations[i].Sequence2(TRUE, FALSE, m_udiErrorID => udiErrorID);
+			IF udiErrorID <> 0 THEN
+				sLog := '';
+				sLog := CONCAT('Auto: Error in station: ', UDINT_TO_STRING(i));
+				iState := 1000;		
+			END_IF
+		END_FOR*)
+		IF bEnable = FALSE THEN 
+			iState := 100; 
+		END_IF
+	
+	100 : //Stop
+		sLog := CONCAT('Auto: Exit stations from auto mode, State: ', INT_TO_STRING(iState));
+		bAllDOne := TRUE;
+		FOR i:= 1 TO stCurrentCfg.udiNumStations DO
+			bAllDone := bAllDOne AND NOT aStations[i].Stop();
+		END_FOR
+		IF bAllDone THEN
+			iState := iState + 1;
+		END_IF
+		
+	101 : //Check for all StandStill
+		sLog := CONCAT('Auto: Check all movers at standstill, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].standstill();
+		END_FOR
+		IF bAllDOne THEN
+			iState := iState + 1;
+		END_IF
+		
+	102 : //Gear Out
+		sLog := CONCAT('Auto: Gear out, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			IF IsPassiveMover(i) THEN
+				bAllDone := bAllDone AND ax[i].gearOut(TRUE).bDone;
+			END_IF
+		END_FOR
+		IF bAllDOne THEN
+			FOR i := 1 TO udiNumMovers DO
+				IF IsPassiveMover(i) THEN
+					ax[i].gearOut(FALSE);
+				END_IF
+			END_FOR
+			iState := iState + 1;
+		END_IF
+		
+	103 : bBusy := FALSE;
+		sLog := CONCAT('Auto: End, State: ', INT_TO_STRING(iState));
+		IF bEnable = FALSE THEN
+			iState := 0;
+		END_IF
+		
+	999 : //Error State 
+		bBusy := FALSE;
+		sLog := CONCAT('Auto: Abort, State: ', INT_TO_STRING(iState));
+		FOR i:=1 TO stCurrentCfg.udiNumStations DO
+			//Abort Station Sequence
+			aStations[i].Stop();
+		END_FOR
+		IF bEnable = FALSE THEN
+			sLog := CONCAT('Auto: End, State: ', INT_TO_STRING(iState));
+			iState := 0;
+		END_IF
+		
+	1000 : //Internal Error
+		bBusy := FALSE;
+		IF bEnable = FALSE THEN
+			FOR i:=1 TO stCurrentCfg.udiNumStations DO
+				//Abort Station Sequence
+				aStations[i].Stop();
+			END_FOR
+			sLog := CONCAT('Auto: End, State: ', INT_TO_STRING(iState));
+			iState := 0;
+		END_IF		
+		
+END_CASE
+Automatic := bBusy;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ConfigureStations" Id="{761a1090-b788-423f-9630-14b34f05d571}" FolderPath="Utilities\">
+      <Declaration><![CDATA[METHOD ConfigureStations : BOOL
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR_INST
+	bAllDone 	: BOOL;
+	i			: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bAllDone := TRUE;
+FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
+	
+	//Configure the relationship between stations
+	IF i<stCfg.udiNumStations THEN
+			aStations[i].configure(stCfg.stStationsCfg[i], udiNumMovers, lrPart1Length, ax[1].bMoverInverted, aStations[i+1]);
+			//aStations[i].INextStation := aStations[i+1];	
+	ELSIF i = stCfg.udiNumStations THEN	
+			aStations[i].configure(stCfg.stStationsCfg[i], udiNumMovers, lrPart1Length, ax[1].bMoverInverted, aStations[1]);
+			//aStations[i].INextStation := aStations[1];	
+	ELSE
+		aStations[i].configure(stCfg.stStationsCfg[i], udiNumMovers, lrPart1Length, ax[1].bMoverInverted, aStations[1]);
+	END_IF
+
+	//aStations[i](stCfg := stCfg.stStationsCfg[i], (*ax := ax,*) udiNumMovers := udiNumMovers, lrPartLength := lrPart1Length, bInvertPolarity := ax[1].bMoverInverted, ax := ax);
+	IF stCfg.bNotCfgStationsViewer = FALSE THEN
+		IF aStationsOTCID[i] <> 0 THEN
+			bAllDone := bAllDone AND aStations[i].SetStationInfo(TRUE, OTCID := aStationsOTCID[i], i > SEL(stCurrentCfg.udiNumStations=0, stCurrentCfg.udiNumStations, stCfg.udiNumStations));
+		END_IF
+	ELSE
+		bAllDone := TRUE;
+	END_IF
+END_FOR
+IF bAllDone THEN
+	FOR i:= 1 TO Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoStation DO
+		aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
+	END_FOR
+	ConfigureStations := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="cyclic" Id="{9d69d6dd-fef0-46a1-a4de-eb5ad356d43b}">
+      <Declaration><![CDATA[METHOD cyclic : BOOL
+VAR_INPUT
+END_VAR
+VAR
+	i : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Initialization
+Init(); 
+
+//Operation
+IF bInitDone THEN
+	//Enable System
+	bEnabled := Enable(bEnable);
+	bInManual:= Manual(bManual AND bInAutomatic = FALSE AND bEnabled);
+	bInAutomatic := Automatic(bAutomatic AND bInManual = FALSE AND bEnabled);
+END_IF
+Reset(bReset AND bAllMoversStandStill);
+
+IF udiNumMovers <> 0 THEN
+	//Call Group CA
+	gp.Cyclic(ax);
+	
+	eGroupState 			:= gp.eGroupState;
+	bAllMoversStandStill 	:= gp.bAllStandStill;
+	
+	//Call Movers
+	FOR i := 1 TO TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu DO
+		ax[i].cyclic();
+	END_FOR
+	
+	//Call Stations
+	FOR i:= 1 TO stCfg.udiNumStations DO
+		aStations[i].cyclic(ax);
+	END_FOR
+	
+	//Status
+	bReadyForMotion := gp.bGroupError = FALSE AND bEnabled;
+	bError			:= gp.bGroupError;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Enable" Id="{578eff18-54db-4044-88c4-275ff826915e}">
+      <Declaration><![CDATA[METHOD PRIVATE Enable : BOOL
+VAR_INPUT
+	bEnable		: BOOL;
+END_VAR
+VAR_INST
+	iState 		: INT;
+	bAllDone 	: BOOL;
+	i 			: UDINT;
+	bDone		: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+IF (bError OR bReset) AND iState <> 999 AND iState <> 60 THEN iState := 999; END_IF
+
+CASE iState OF
+	
+	0 : //Wait for Command
+		IF bEnable THEN 
+			FOR i := 1 TO udiNumMovers DO
+				ax[i].ClearCmd();
+			END_FOR
+			gp.clearcmd();
+			bDone := FALSE;
+			iState := iState + 10; 
+		END_IF
+	
+	10 : //Reset Movers
+		sLog := CONCAT('Enable: Reset movers, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].reset(TRUE).bDone;
+		END_FOR
+		IF bAllDone THEN
+			iState := iState + 1;
+		END_IF
+		
+	11 : //Power off all
+		sLog := CONCAT('Disable: Power off all movers, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].power_off().bDone;
+		END_FOR
+		IF bAllDone THEN
+			iState := iState + 1;
+		END_IF
+		
+	12 : //Configure movers inversion
+		sLog := CONCAT('Enable: Configure movers inversion, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].InvertPolarity(TRUE, stCfg.bInvertPolarity);
+		END_FOR
+	 	IF bAllDOne THEN
+			 FOR i := 1 TO udiNumMovers DO
+			 	ax[i].InvertPolarity(FALSE, stCfg.bInvertPolarity);
+		 	 END_FOR
+			 iState := 20;
+	 	END_IF
+		
+	20 : //Power all Axis
+		sLog := CONCAT('Enable: Power on movers, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].power_on().bDone;
+			IF ax[i].power_on().bError THEN
+				sLog := CONCAT('Enable: Power on movers errors on mover: ', UDINT_TO_STRING(i));
+				sLog := CONCAT(sLog, UDINT_TO_STRING(ax[i].power_on().udiErrorID));
+				EXIT;
+				iState := 999;
+			END_IF
+		END_FOR
+		IF bAllDone THEN
+			iState := iState + 1;
+		END_IF
+		
+	21 : //Decopule axis
+		sLog := CONCAT('Enable: Gear out movers, State: ', INT_TO_STRING(iState));
+		FOR i:=1 TO udiNumMovers DO
+			IF ax[i].p_Axis.Status.Coupled  THEN
+				//
+				bAllDone := bAllDOne AND ax[i].gearOut(TRUE).bDone;
+			END_IF
+		END_FOR
+		IF bAllDOne THEN
+			FOR i:=1 TO udiNumMovers DO
+				ax[i].gearOut(FALSE);
+			END_FOR
+			iState := 30;
+		END_IF
+		
+	30 : //Reset Group
+		sLog := CONCAT('Enable: Reset group CA, State: ', INT_TO_STRING(iState));
+		IF gp.reset(TRUE).bDone THEN
+			iState := iState + 10;
+		ELSIF gp.reset(TRUE).bError THEN
+			sLog := CONCAT('Enable: Reset group CA Error : ', UDINT_TO_STRING(gp.reset(TRUE).udiErrorID));
+			gp.reset(FALSE);
+			iState := 1000;
+		END_IF
+		
+	40 : //Add all axis to group
+		sLog := CONCAT('Enable: Add movers to group, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].add2Group(TRUE, ag := gp.ag).bDone;
+		END_FOR
+		IF bAllDone THEN
+			FOR i := 1 TO udiNumMovers DO
+				ax[i].add2Group(FALSE, ag := gp.ag);
+			END_FOR
+			iState := iState + 10;
+		END_IF
+		
+	50 : //Enable group
+		sLog := CONCAT('Enable: Enable group CA, State: ', INT_TO_STRING(iState));
+		IF gp.enable(TRUE).bDone THEN
+			iState := iState + 10;
+			sLog := CONCAT('Enable: Enable done!, State: ', INT_TO_STRING(iState));
+		ELSIF gp.enable(TRUE).bError THEN
+			sLog := CONCAT('Enable: Enable group CA Error : ', UDINT_TO_STRING(gp.enable(TRUE).udiErrorID));
+			gp.enable(FALSE);
+			iState := 1000;
+		END_IF
+		
+	60 : //Jog Done
+		 bDone := TRUE;
+		 IF bEnable = FALSE THEN iState := 70; END_IF 
+
+	70 : //Halt group
+		sLog := CONCAT('Disable: Halt movers, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].haltca(TRUE).bDone;
+		END_FOR
+		IF bAllDone THEN
+			iState := iState + 10;
+		END_IF
+		
+	80 : //Disable
+		sLog := CONCAT('Disable: Disable group CA, State: ', INT_TO_STRING(iState));
+		IF gp.disable(TRUE).bDone THEN
+			iState := iState + 10;
+		ELSIF gp.disable(TRUE).bError THEN
+			sLog := CONCAT('Disable: Disable group CA Error : ', UDINT_TO_STRING(gp.disable(TRUE).udiErrorID));
+			gp.disable(FALSE);
+			iState := 1000;
+		END_IF		
+
+	90 : //UnGroup
+		sLog := CONCAT('Disable: Ungroup all movers, State: ', INT_TO_STRING(iState));
+		IF gp.ungroupall(TRUE).bDone THEN
+			iState := iState + 10;
+		ELSIF gp.ungroupall(TRUE).bError THEN
+			sLog := CONCAT('Disable: UnGroup all movers Error : ', UDINT_TO_STRING(gp.ungroupall(TRUE).udiErrorID));
+			gp.ungroupall(FALSE);
+			iState := 1000;
+		END_IF
+	
+	100 : //Power off all
+		sLog := CONCAT('Disable: Power off all movers, State: ', INT_TO_STRING(iState));
+		bAllDone := TRUE;
+		FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].power_off().bDone;
+		END_FOR
+		IF bAllDone THEN
+			sLog := 'Disable: Done!';
+			bDone := FALSE;
+			iState := 0;
+		END_IF
+		
+	999 : //Abort
+		sLog := CONCAT('Enable: Abort, State: ', INT_TO_STRING(iState));
+		iState := 0;
+		
+	1000 : //Error
+		iState := 0;
+		 
+END_CASE
+Enable := bDone;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{39a6ee40-aeb1-4582-9e00-e75616bfd396}">
+      <Declaration><![CDATA[METHOD PRIVATE Init
+VAR_INST
+	iState 		: INT;
+	bAllDone 	: BOOL;
+	i 			: UDINT;
+	udiErrorID	: UDINT;
+	bSomeError  : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+//XPU Initialization
+IF bXPUInitDone = FALSE THEN
+	sLog := 'Init: Initialazing XPU';
+	IF fbXTSEnv.Init(TRUE) THEN
+		sLog := 'Init: XPU Initialazed';
+		fbXTSEnv.Init(FALSE);
+		bXPUInitDone := TRUE;
+	END_IF	
+END_IF
+
+IF bReset AND iState <> 999 AND bInitDone = FALSE THEN iState := 999; END_IF
+
+CASE iState OF
+	
+	0 : 
+		IF bXPUInitDone THEN 
+			gp.clearCmd();
+			FOR i:=1 TO udiNumMovers DO
+				bAllDone := bAllDOne AND ax[i].clearCmd();
+			END_FOR
+			iState := iState + 10; 
+		END_IF
+	
+	10 : //Get XPU Parameters
+		sLog := 'Init: Checking XPU parameters';
+		Ixpu 						:= fbXTSEnv.XpuTcIo(1);
+		IPart1						:= Ixpu.PartTcIo(1);
+		iOperationMode 				:= Ixpu.GetOperationMode();
+		AreAllPositionValid 		:= Ixpu.GetAreAllPositionsValid();
+		DetectedMoverCount 			:= Ixpu.GetDetectedMoverCount();
+		ExpectedMoverCount 			:= Ixpu.GetExpectedMoverCount();
+		HasMoverIDDetectorError 	:= Ixpu.GetHasMoverIdDetectionError();
+		IsMoveriddetectoractive 	:= Ixpu.GetIsMoverIdDetectionActive();
+		ismoverisdetectionvalid 	:= Ixpu.GetIsMoverIdDetectionValid();
+		TrackCount					:= Ixpu.GetTrackCount();
+		PartCount					:= Ixpu.GetPartCount();
+		lrPart1Length 				:= IPart1.GetLength();
+		udiPart1NumModules			:= IPart1.GetModuleCount();
+		udiNumMovers 				:= Ixpu.GetMoverCount();
+		eMoverType					:= Ixpu.GetMoverType();
+		
+		IF (Ixpu.GetDetectedMoverCount() = Ixpu.GetExpectedMoverCount()) AND Ixpu.GetAreAllPositionsValid() THEN
+			iState := iState + 10; 			
+		END_IF
+
+	20 : //Detect Mover 1 
+		sLog := 'Init: Detecting mover 1';
+		IF Ixpu.GetIsMoverIdDetectionValid() = FALSE THEN
+			IF Ixpu.GetMoverIdDetectionMode() = 1 THEN
+				Ixpu.TriggerMoverIdDetection();
+				iState := iState + 1;
+			ELSE
+				bMover1DetectionValid := TRUE;
+				iState := iState + 10;
+			END_IF
+		ELSE
+			bMover1DetectionValid := TRUE;
+			iState := iState + 10;
+		END_IF
+		
+	21 : //Check Mover 1 Detection Valid
+		IF Ixpu.GetIsMoverIdDetectionValid() THEN
+			bMover1DetectionValid := TRUE;
+			iState := 30;
+		END_IF
+	
+	30 : //Get OIDS of Group CA
+		sLog := 'Init: Getting group CA Oids';
+		IF fbXTSEnv.GetCaGroupOids(TRUE) THEN
+			fbXTSEnv.GetCaGroupOids(FALSE);
+			GroupCAOTCID := fbXTSEnv.P_CaGroupOids;
+			IF gp.init(TRUE, GroupCAOTCID[1]) THEN
+				gp.init(FALSE, GroupCAOTCID[1]);
+				iState := 31;
+			END_IF
+		END_IF
+		
+	31 : //Reset Group
+		sLog := 'Init: Reset group CA';
+		IF gp.reset(TRUE).bDone THEN
+			gp.reset(FALSE);
+			iState := iState + 1;
+		ELSIF gp.reset(TRUE).bError THEN
+			sLog := CONCAT('Init: Reset group CA Error : ', UDINT_TO_STRING(gp.reset(TRUE).udiErrorID));
+			gp.reset(FALSE);
+			iState := 1000;
+		END_IF
+		
+	32 : //Disable Group in order to configure the Rail Length
+		sLog := 'Init: UnGroup all';
+		IF gp.ungroupall(TRUE).bDone THEN
+			gp.ungroupall(FALSE);
+			iState := iState + 1;
+		ELSIF gp.ungroupall(TRUE).bError THEN
+			sLog := CONCAT('Init: UnGroup all movers Error : ', UDINT_TO_STRING(gp.ungroupall(TRUE).udiErrorID));
+			gp.ungroupall(FALSE);
+			iState := 1000;
+		END_IF
+		
+	33 : //Set Group CA Rail Length equal to Part 1 length
+		sLog := 'Init: Get group CA Oids';
+		//IF gp.fbXPUGroupCA.Init(TRUE, GroupCAOTCID[1]) THEN
+			IF gp.SetRailLength(lrPart1Length) THEN
+				//gp.fbXPUGroupCA.Init(FALSE, GroupCAOTCID[1]);
+				iState := 40;		
+			END_IF
+		//END_IF
+		
+	40 : //Get Info Server OIDS
+		sLog := 'Init: Get Info Server Oids';
+		IF Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsInfoServer > 0 THEN 
+			IF fbXTSEnv.GetInfoServerOids(TRUE) THEN
+				fbXTSEnv.GetInfoServerOids(FALSE);
+				aInfoServerOids := fbXTSEnv.P_InfoServerOids;
+				i:=1;
+				fbInfoServer.Init(FALSE, aInfoServerOids[i]);
+				iState := iState + 1;
+			END_IF
+		ELSE
+			iState := iState + 10;
+		END_IF
+
+	41 : //Get OCID of Stations
+		sLog := 'Init: Get Info Stations Oids';
+		IF fbInfoServer.Init(TRUE, aInfoServerOids[i]) THEN
+			IF fbInfoServer.GetInfoStationOids() THEN
+				aStationsOTCID := fbInfoServer.P_InfoStationOids;
+				fbInfoServer.Init(FALSE, aInfoServerOids[i]);
+				FOR i:= 1 TO stCfg.udiNumStations DO
+					aStations[i].SetStationInfo(FALSE, OTCID := aStationsOTCID[i], FALSE);
+				END_FOR
+				iState := 50;
+			END_IF
+		END_IF
+		
+	50 : //Get Mover OIDS
+		sLog := 'Init: Get movers Oids';
+		IF IXPU.GetMoverOids() THEN
+			aMoversOids := IXPU.P_MoverOids;
+			iState := iState + 1;
+		END_IF
+		
+	51 : //Gear out movers
+		sLog := 'Init: Gear out movers';
+		bAllDone := TRUE;
+		FOR i:=1 TO udiNumMovers DO
+			IF ax[i].p_Axis.Status.Coupled THEN
+				//
+				bAllDone := bAllDOne AND ax[i].gearOut(TRUE).bDone;
+			END_IF
+		END_FOR
+		IF bAllDOne THEN
+			FOR i:=1 TO udiNumMovers DO
+				ax[i].gearOut(FALSE);
+			END_FOR
+			iState := iState + 1;
+		END_IF
+		
+	52 : //Reset Movers
+		sLog := 'Init: Reset movers';
+		bAllDOne := TRUE;
+		 FOR i := 1 TO udiNumMovers DO
+			bAllDone := bAllDone AND ax[i].reset(TRUE).bDone;
+			IF ax[i].reset(TRUE).bError THEN
+				bSomeError := TRUE; 
+				EXIT; 
+			END_IF
+		 END_FOR
+		 IF bAllDOne THEN
+			 FOR i := 1 TO udiNumMovers DO
+			 	ax[i].reset(FALSE);
+		 	 END_FOR
+			 iState := iState + 1;
+		 ELSIF bSomeError THEN
+			sLog := CONCAT('Init: Reset movers Error in mover : ', UDINT_TO_STRING(i));
+			sLog := CONCAT('sLog: ', UDINT_TO_STRING(ax[i].reset(TRUE).udiErrorID));
+			FOR i := 1 TO udiNumMovers DO
+			 	ax[i].reset(FALSE);
+		 	 END_FOR
+			bSomeError 	:= FALSE;
+			iState 		:= 1000;
+		 END_IF
+		 
+	53 : //Power off Movers
+		sLog := 'Init: Power off movers';
+		bAllDOne := TRUE;
+		 FOR i := 1 TO udiNumMovers DO
+			 bAllDone := bAllDone AND ax[i].power_off().bDone;
+		 END_FOR
+		 IF bAllDOne THEN
+			 iState := iState + 1;
+		 END_IF
+		 
+	54 : //Configure Movers
+		sLog := 'Init: Configure movers';
+		 bAllDone := TRUE;
+		 FOR i := 1 TO udiNumMovers DO
+			 bAllDone := bAllDone AND ax[i].InvertPolarity(TRUE, stCfg.bInvertPolarity);
+		 END_FOR
+	 	IF bAllDOne THEN
+			 FOR i := 1 TO udiNumMovers DO
+			 	ax[i].InvertPolarity(FALSE, stCfg.bInvertPolarity);
+		 	 END_FOR
+			 iState := 55;
+	 	END_IF
+		
+	55 : //Init Movers
+		bAllDone := TRUE;
+		 FOR i := 1 TO udiNumMovers DO
+			 bAllDone := bAllDone AND ax[i].Init(TRUE, aMoversOids[i]);
+		 END_FOR
+		 IF bAllDOne THEN
+			 FOR i := 1 TO udiNumMovers DO
+			 	ax[i].Init(FALSE, aMoversOids[i]);
+		 	 END_FOR
+		 	iState := 60;
+		 END_IF
+		
+	60 : //Init Stations
+		bAllDone := TRUE;
+		FOR i:= 1 TO stCfg.udiNumStations DO
+			aStations[i].Init(TRUE, aStationsOTCID[i]);
+		END_FOR
+		IF bAllDone THEN
+			FOR i:= 1 TO stCfg.udiNumStations DO
+				aStations[i].Init(FALSE, aStationsOTCID[i]);
+			END_FOR
+			iState := iState + 1;
+		END_IF
+		
+	61 : //Set Stations configuration
+		sLog := 'Init: Configure stations';
+		IF ConfigureStations() THEN
+			stVisuStationsCfg := stCfg.stStationsCfg;
+			iState := 70;
+		END_IF
+		
+	70 : //Jog Done
+		 sLog := 'Init: Done!';
+		 bInitDone 	:= TRUE;
+		 iState := 71;
+		 
+	71 :
+		//
+		
+	999: //Abort
+		sLog := CONCAT('Init: Abort, State: ', INT_TO_STRING(iState));
+		iState := 0;
+		
+	1000 : //Error
+		iState := 0;
+			 
+END_CASE
+
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="IsPassiveMover" Id="{9b58f478-1f08-40ed-9940-9ad1d8c68206}" FolderPath="Utilities\">
+      <Declaration><![CDATA[METHOD IsPassiveMover : BOOL
+VAR_INPUT
+	ID 				: UDINT;
+END_VAR
+VAR_INST
+	i 				: DINT;
+	bFirstMoverEven : BOOL;
+	iTmp			: udint;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stCFg.udiMoverMode = 2 THEN
+	bFirstMoverEven := (udiFirstMover MOD 2) = 0;
+	IsPassiveMover := ((ID MOD 2) <> 0 AND bFirstMoverEven) OR ((ID MOD 2) = 0 AND bFirstMoverEven = FALSE);
+ELSIF stCFg.udiMoverMode = 3 THEN
+	iTmp := udiFirstMover MOD 3;
+	IsPassiveMover := ((ID MOD 3) <> iTmp); //AND bFirstMoverEven) OR ((ID MOD 3) <> 0 AND bFirstMoverEven = FALSE);
+END_IF
+
+	(*i := udiFirstMover-1;
+	WHILE i = udiFirstMover+1 DO
+		//
+		IF ID = DINT_TO_UDINT(i) THEN 
+			m_isPassiveMover := TRUE; 
+			RETURN;
+		END_IF
+		i := i - 2;
+		IF i < 1 THEN i := stCfg.uiTotalAxis; END_IF
+	END_WHILE*)
+
+	(*FOR i := udiFirstMover-1 TO 1 BY -2 DO
+		IF ID = DINT_TO_UDINT(i) THEN 
+			m_isPassiveMover := TRUE; 
+			RETURN;
+		END_IF	
+		IF i < 1 THEN
+			RETURN;
+		END_IF
+	END_FOR	
+	
+	FOR i := stCfg.uiTotalAxis TO udiFirstMover BY -2 DO
+		IF ID = DINT_TO_UDINT(i) THEN 
+			m_isPassiveMover := TRUE; 
+			RETURN;
+		END_IF	
+		IF i < 1 THEN
+			RETURN;
+		END_IF
+	END_FOR*)
+
+//END_IF	]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Manual" Id="{da1fa912-79d7-445a-b8e4-8be7db44a6c0}">
+      <Declaration><![CDATA[METHOD PRIVATE Manual : BOOL
+VAR_INPUT
+	bEnable 			: BOOL;
+END_VAR
+VAR_INST
+	iState 				: INT;
+	bAllDone 			: BOOL;
+	i 					: UDINT;
+	bBusy				: BOOL;
+	fbRTRIG				: R_Trig;
+	m_udiStationSelection : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+IF (bError OR bReset) AND iState <> 999 and bBusy THEN iState := 999; END_IF
+
+CASE iState OF
+	0 : IF bEnable THEN 
+			iState := iState + 1; 
+			bBusy  := TRUE;
+		END_IF
+		
+	1 : //Idle
+		sLog := CONCAT('Manual: Idle, State: ', INT_TO_STRING(iState));
+		
+		IF iVisuMoverSelection > 0 THEN udiMoverSelection := INT_TO_UDINT(iVisuMoverSelection); ELSE udiMoverSelection := 0; END_IF
+		IF iVisuStationSelection > 0 THEN udiStationSelection := INT_TO_UDINT(iVisuStationSelection); ELSE udiStationSelection := 0; END_IF
+		IF iVisuStopPositionSelection > 0 THEN udiStopPositionSelection	:= INT_TO_UDINT(iVisuStopPositionSelection); ELSE udiStopPositionSelection := 0; END_IF
+		
+		IF bEnable = FALSE THEN
+			iState := 100;
+		ELSIF bJogBackwards OR bJogForward THEN
+			iState := 10; 
+		ELSIF bManualMove AND udiStationSelection = 0 THEN
+			//Move All with Target Position
+			iState := 50; 
+		ELSIF bManualMove AND udiStationSelection > 0 AND udiStationSelection < stCfg.udiNumStations+1 AND udiStopPositionSelection > 0 AND udiStopPositionSelection < 6 THEN
+			//Move Mover to Station 
+			iState := 60;
+		ELSIF bTeachStation AND udiStationSelection > 0 AND udiMoverSelection > 0 AND udiStopPositionSelection > 0 AND udiStopPositionSelection < 6 THEN
+			m_udiStationSelection := udiStationSelection;
+			iState := 70;
+		END_IF
+		
+	10 : //Manual mode operation 0 
+		sLog := CONCAT('Manual: Jogging, State: ', INT_TO_STRING(iState));
+		IF udiMoverSelection = 0 THEN
+			bAllDone := TRUE;
+			FOR i := 1 TO udiNumMovers DO
+				bAllDone := bAllDone AND ax[i].jogca_velo(bJogBackwards, bJogForward, lrTargetVelocity).bBusy = FALSE;
+			END_FOR
+			IF bJogBackwards = FALSE AND bJogForward = FALSE AND bAllDone THEN
+				iState := 1;
+			END_IF	
+		ELSE
+			IF udiMoverSelection < 1 OR udiMoverSelection > udiNumMovers THEN udiMoverSelection := 1; END_IF
+			IF ax[udiMoverSelection].jogca_velo(bJogBackwards, bJogForward, lrTargetVelocity).bBusy = FALSE AND bJogBackwards = FALSE AND bJogForward = FALSE THEN
+				iState := 1;	
+			END_IF
+		END_IF
+		
+	50 : //Manual Operation with Target Position
+		sLog := CONCAT('Manual: Go to target position: ', INT_TO_STRING(iState));
+		IF udiMoverSelection = 0 THEN
+			FOR i := 1 TO udiNumMovers DO
+				ax[i].moveca_direction(bManualMove, lrTargetPosition, lrTargetVelocity, Direction);
+			END_FOR
+			IF bAllMoversStandStill AND bManualMove = FALSE THEN
+				iState := 1;
+			END_IF
+		ELSE ax[udiMoverSelection].moveca_direction(bManualMove, lrTargetPosition, lrTargetVelocity, Direction);
+			IF bAllMoversStandStill AND bManualMove = FALSE THEN
+				iState := 1;
+			END_IF
+		END_IF
+		
+	60 : //Manual Operation with Stations
+		sLog := CONCAT('Manual: Go to station: ', INT_TO_STRING(iState));
+		IF udiMoverSelection = 0 THEN
+			FOR i := 1 TO udiNumMovers DO
+				IF udiStopPositionSelection = 1 THEN
+					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);		
+				ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
+					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection-1] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);					
+				ELSIF udiStopPositionSelection = 5 THEN
+					ax[i].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrEndPosition, lrTargetVelocity, Direction);	
+				END_IF
+			END_FOR
+			IF bAllMoversStandStill AND bManualMove = FALSE THEN
+				iState := 1;
+			END_IF
+		ELSE 
+			IF udiStopPositionSelection = 1 THEN
+				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);		
+			ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
+				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrStopPosition[udiStopPositionSelection-1] + aStations[udiStationSelection].stCfg.lrStartPosition, lrTargetVelocity, Direction);					
+			ELSIF udiStopPositionSelection = 5 THEN
+				ax[udiMoverSelection].moveca_direction(bManualMove, aStations[udiStationSelection].stCfg.lrEndPosition, lrTargetVelocity, Direction);	
+			END_IF
+			IF bAllMoversStandStill AND bManualMove = FALSE THEN
+				iState := 1;
+			END_IF
+		END_IF
+		
+	70 : //Teach Station
+		sLog := CONCAT('Manual: Teaching station: ', INT_TO_STRING(iState));
+		IF udiStopPositionSelection = 1 THEN
+			stCfg.stStationsCfg[m_udiStationSelection].lrStartPosition := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos;		
+		ELSIF udiStopPositionSelection > 1 AND udiStopPositionSelection < 5 THEN
+			stCfg.stStationsCfg[m_udiStationSelection].lrStopPosition[udiStopPositionSelection-1] := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos-stCfg.stStationsCfg[m_udiStationSelection].lrStartPosition;					
+		ELSIF udiStopPositionSelection = 5 THEN
+			stCfg.stStationsCfg[m_udiStationSelection].lrEndPosition := ax[udiMoverSelection].p_Axis.NcToPlc.ModuloSetPos;			
+		END_IF
+		IF ConfigureStations() THEN iState := iState + 1; END_IF
+		
+	71 : //Apply New Configuration
+		sLog := CONCAT('Manual: Teaching done: ', INT_TO_STRING(iState));
+		bTeachDone := TRUE;
+		IF bTeachStation = FALSE THEN
+			bTeachDone := FALSE;
+			iState := 1;
+		END_IF
+		
+	100 : 
+		sLog := CONCAT('Manual: End, State: ', INT_TO_STRING(iState));
+		bBusy := FALSE;
+		iState := 0;
+		
+	999 : //Abort
+		sLog := CONCAT('Manual: Abort, State: ', INT_TO_STRING(iState));
+		bBusy := FALSE;
+		iState := 0;
+		
+END_CASE
+Manual := bBusy;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{911d81c3-9cf5-43a5-b484-4c6e2c0cab05}" FolderPath="Utilities\">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+VAR_INPUT
+	bEnable 	: BOOL;
+END_VAR
+VAR_INST
+	iState		: INT;
+	i 			: UDINT;
+	bAllDOne 	: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+IF bEnable = FALSE THEN iState := 0; END_IF
+
+CASE iState OF
+	0 : IF bEnable THEN 
+			FOR i:=1 TO udiNumMovers DO
+				ax[i].reset(FALSE);
+				ax[i].gearOut(FALSE);
+			END_FOR
+			gp.reset(FALSE);
+			iState := iState + 1; 
+		END_IF
+	1 :
+		bAllDone := TRUE;
+		FOR i:=1 TO udiNumMovers DO
+			IF ax[i].p_Axis.Status.Coupled = FALSE THEN
+				bAllDone := bAllDOne AND ax[i].reset(TRUE).bDone;
+			END_IF
+		END_FOR
+		IF bAllDone THEN
+			FOR i:=1 TO udiNumMovers DO
+				bAllDone := bAllDOne AND ax[i].reset(FALSE).bDone;
+			END_FOR
+			iState := iState + 1;
+		END_IF
+		
+	2 : //Check if there is some axis coupled and decoupled (Is not possible to perform a reset group with axis coupled)
+		bAllDone := TRUE;
+		FOR i:=1 TO udiNumMovers DO
+			IF ax[i].p_Axis.Status.Coupled THEN
+				//
+				bAllDone := bAllDOne AND ax[i].gearOut(TRUE).bDone;
+			END_IF
+		END_FOR
+		IF bAllDOne THEN
+			FOR i:=1 TO udiNumMovers DO
+				ax[i].gearOut(FALSE);
+			END_FOR
+			iState := iState + 1;
+		END_IF
+	
+	3 : //Reset Group
+		IF gp.reset(TRUE).bDone THEN
+			iState := iState + 1;
+			gp.reset(FALSE);
+		ELSIF gp.reset(TRUE).bError THEN
+			sLog := CONCAT('Reset: Reset group CA Error : ', UDINT_TO_STRING(gp.reset(TRUE).udiErrorID));
+			gp.reset(FALSE);
+			iState := 1000;
+		END_IF
+		
+	4 : //Reset Done
+		Reset := TRUE;
+		IF bEnable = FALSE THEN
+			iState := 0;
+		END_IF
+		
+	1000 : //Error
+		iState := 0;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WhoIsAtPos" Id="{44b13db2-c515-40a5-8b3e-0612ab9a1e21}" FolderPath="Utilities\">
+      <Declaration><![CDATA[METHOD WhoIsAtPos : UDINT
+VAR_INPUT
+	lrPosition : LREAL;
+END_VAR
+VAR_INST
+	i 			: UDINT;
+	lrDistance	: LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 1 TO udiNumMovers DO
+	lrDistance := lrPosition - ax[i].p_ModulePos;
+	IF ABS(lrDistance) < 1.0 OR ABS(lrDistance - lrPart1Length) < 1.0 THEN
+		WhoIsAtPos := ax[i].udiID;
+	END_IF
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

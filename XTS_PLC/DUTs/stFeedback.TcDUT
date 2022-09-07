@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="stFeedback" Id="{b64993e5-6995-4c2a-a7d0-0c2566f5372d}">
+    <Declaration><![CDATA[TYPE stFeedback :
+STRUCT
+	bBusy			: BOOL;
+	bDone			: BOOL;
+	bCommandAborted : BOOL;
+	bError			: BOOL;
+	udiErrorID		: UDINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

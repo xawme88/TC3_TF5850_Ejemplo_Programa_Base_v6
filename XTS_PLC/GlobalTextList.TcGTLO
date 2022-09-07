@@ -6,8 +6,43 @@
         <o xml:space="preserve" t="GlobalTextListObject">
           <l n="TextList" t="ArrayList" cet="TextListRow">
             <o>
+              <v n="TextID">"991"</v>
+              <v n="TextDefault">"     Done   Busy  Abort  Error         ErrorID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"185"</v>
+              <v n="TextDefault">"     Done   Busy  Abort  Error     ErrorID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"381"</v>
+              <v n="TextDefault">"     Done   Busy  CAborted     Error     ErrorID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"98"</v>
+              <v n="TextDefault">"    Coupled"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"946"</v>
+              <v n="TextDefault">"    StandStill"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"454"</v>
+              <v n="TextDefault">"  StandStill"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"73"</v>
               <v n="TextDefault">"%5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"853"</v>
+              <v n="TextDefault">"%5.2f s/m"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -21,6 +56,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"803"</v>
+              <v n="TextDefault">"%i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"164"</v>
               <v n="TextDefault">"%s"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -31,13 +71,33 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"1103"</v>
+              <v n="TextDefault">"+"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"854"</v>
+              <v n="TextDefault">"-"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"433"</v>
               <v n="TextDefault">"Ack"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"784"</v>
+              <v n="TextDefault">"ActPos: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"935"</v>
               <v n="TextDefault">"Actual Waiting Time"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"58"</v>
+              <v n="TextDefault">"ActVelo: %5.2f"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -66,6 +126,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"93"</v>
+              <v n="TextDefault">"Busy"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"147"</v>
               <v n="TextDefault">"CONFIG"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -86,13 +151,53 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"242"</v>
+              <v n="TextDefault">"Cycle Time"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"914"</v>
+              <v n="TextDefault">"Cycle Time: %5.2f s/mover"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"441"</v>
+              <v n="TextDefault">"DISABLE"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"194"</v>
               <v n="TextDefault">"Distance between movers"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"402"</v>
+              <v n="TextDefault">"Done   Busy  CAborted     Error     ErrorID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"405"</v>
+              <v n="TextDefault">"Done  Busy  CAborted     Error     ErrorID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"49"</v>
+              <v n="TextDefault">"Done  Busy  CAborted  Error"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"844"</v>
+              <v n="TextDefault">"Done  Busy  CAborted  Error     ErrorID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"992"</v>
               <v n="TextDefault">"ENABLE"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"24"</v>
+              <v n="TextDefault">"Enable Visu Control, all methods will be locked"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -106,6 +211,16 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"860"</v>
+              <v n="TextDefault">"End Position: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"682"</v>
+              <v n="TextDefault">"End: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"605"</v>
               <v n="TextDefault">"Error"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -116,8 +231,33 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"174"</v>
+              <v n="TextDefault">"ErrorID: %i"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"183"</v>
+              <v n="TextDefault">"EXECUTE"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"933"</v>
+              <v n="TextDefault">"Execute      Done   Busy  CAborted     Error     ErrorID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"529"</v>
               <v n="TextDefault">"Extra Cfg."</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"961"</v>
+              <v n="TextDefault">"GROUP CA"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"823"</v>
+              <v n="TextDefault">"HALT"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -126,8 +266,23 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"360"</v>
+              <v n="TextDefault">"Id"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"214"</v>
+              <v n="TextDefault">"ID"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"2378"</v>
               <v n="TextDefault">"Init Done"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"999"</v>
+              <v n="TextDefault">"Internal Control"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -181,6 +336,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"228"</v>
+              <v n="TextDefault">"Mover ID: %d"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"45"</v>
               <v n="TextDefault">"Mover mode"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -206,6 +366,16 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"923"</v>
+              <v n="TextDefault">"Movers In: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1039"</v>
+              <v n="TextDefault">"Movers In: %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"902"</v>
               <v n="TextDefault">"MOVERS SELECTION"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -216,8 +386,23 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"317"</v>
+              <v n="TextDefault">"Movers Waiting: %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"265"</v>
               <v n="TextDefault">"Name"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"139"</v>
+              <v n="TextDefault">"Name: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"769"</v>
+              <v n="TextDefault">"Name: %s"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -228,6 +413,11 @@
             <o>
               <v n="TextID">"270"</v>
               <v n="TextDefault">"Num Stop Positions"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"622"</v>
+              <v n="TextDefault">"Num Stop Positions: %d"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -256,6 +446,26 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"416"</v>
+              <v n="TextDefault">"Process Time: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"664"</v>
+              <v n="TextDefault">"Process Time: %5.2f s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"272"</v>
+              <v n="TextDefault">"Process: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"301"</v>
+              <v n="TextDefault">"Process: %5.2f s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"269"</v>
               <v n="TextDefault">"Processing Time"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -276,8 +486,33 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"679"</v>
+              <v n="TextDefault">"Runtime"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"208"</v>
+              <v n="TextDefault">"StandStill"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"1234"</v>
+              <v n="TextDefault">"START"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"266"</v>
               <v n="TextDefault">"Start Position"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"240"</v>
+              <v n="TextDefault">"Start Position: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"408"</v>
+              <v n="TextDefault">"Start: %5.2f"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -306,13 +541,68 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"771"</v>
+              <v n="TextDefault">"Status"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"724"</v>
+              <v n="TextDefault">"Status:"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"822"</v>
+              <v n="TextDefault">"Status: %D"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"42"</v>
+              <v n="TextDefault">"Status: %d"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"637"</v>
+              <v n="TextDefault">"Status: %s"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"437"</v>
+              <v n="TextDefault">"STOP"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"268"</v>
               <v n="TextDefault">"Stop Position"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"634"</v>
+              <v n="TextDefault">"Stop Position 1: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"734"</v>
+              <v n="TextDefault">"Stop Position 2: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"934"</v>
+              <v n="TextDefault">"Stop Position 3: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"3040"</v>
               <v n="TextDefault">"Stop Position Selection"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"112"</v>
+              <v n="TextDefault">"Stop Positions: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"904"</v>
+              <v n="TextDefault">"Stop Positions: %d"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -323,6 +613,11 @@
             <o>
               <v n="TextID">"809"</v>
               <v n="TextDefault">"Target Velocity"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"190"</v>
+              <v n="TextDefault">"TargetPos: %5.2f"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -341,8 +636,18 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"72"</v>
+              <v n="TextDefault">"Travel Time: %5.2f"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"261"</v>
               <v n="TextDefault">"Waiting Time"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"950"</v>
+              <v n="TextDefault">"x"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
           </l>

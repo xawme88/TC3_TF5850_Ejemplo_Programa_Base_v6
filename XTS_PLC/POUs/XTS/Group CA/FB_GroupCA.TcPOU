@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="FB_GroupCA" Id="{6e35faa1-0ee4-41ef-8125-56a7113871cf}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_GroupCA EXTENDS FB_Mc2CaGroup
+VAR_OUTPUT
+	eGroupState			: MC_GROUP_STATE;
+	bAllStandStill		: BOOL;
+	bGroupError			: BOOL;
+END_VAR
+VAR 
+	//Function Blocks
+	ag					: AXES_GROUP_REF;
+	fbEnable			: MC_GroupEnable;
+	fbDisable			: MC_GroupDisable;
+	fbHalt				: MC_GroupHalt;
+	fbUnGroupAll		: MC_UngroupAllAxes;
+	fbGroupStop			: MC_GroupStop;
+	fbReset				: MC_GroupReset;
+	fbState				: MC_GroupReadStatus;
+	fbAddAxis2Group		: MC_AddAxisToGroup;
+	
+	uiSelectedMover		: UINT := 1;
+	fbMovers			: REFERENCE TO ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF FB_Mover;
+	bInternalControl	: BOOL;
+	bTmp				: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+
+
+
+
+
+	
+]]></ST>
+    </Implementation>
+    <Method Name="clearcmd" Id="{bd3f94be-b975-4f0a-abfd-bd17a7fb4a02}">
+      <Declaration><![CDATA[METHOD clearcmd : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[halt(FALSE);
+reset(FALSE);
+ungroupall(FALSE);
+enable(FALSE);
+disable(FALSE);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="cyclic" Id="{69c10977-2001-4ca9-86c6-86c28bfc86dd}">
+      <Declaration><![CDATA[METHOD cyclic : BOOL
+VAR_INPUT
+	aMovers			: REFERENCE TO ARRAY [1..Tc3_XTS_Utility.TcIoXtsEnvironmentParameterList.MaxXtsMoversPerXpu] OF FB_Mover;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMovers REF= aMovers;
+
+fbEnable(
+	AxesGroup:= ag, 
+	Execute:= , 
+	Done=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorId=> );
+	
+fbDisable(
+	AxesGroup:= ag, 
+	Execute:= , 
+	Done=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorId=> );
+	
+fbGroupStop(
+	AxesGroup:= ag, 
+	Execute:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Done=> , 
+	Busy=> , 
+	Active=> , 
+	CommandAborted=> , 
+	Error=> , 
+	ErrorId=> );
+	
+fbHalt(
+	AxesGroup:= ag, 
+	Execute:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Done=> , 
+	Busy=> , 
+	Active=> , 
+	CommandAborted=> , 
+	Error=> , 
+	ErrorId=> );
+	
+fbUnGroupAll(
+	AxesGroup:= ag, 
+	Execute:= , 
+	Done=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorId=> );
+	
+fbReset(
+	AxesGroup:= ag, 
+	Execute:= , 
+	Done=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorId=> );
+	
+fbState(
+	AxesGroup:= ag, 
+	Enable:= TRUE, 
+	Valid=> , 
+	Busy=> , 
+	GroupMoving=> , 
+	GroupHoming=> , 
+	GroupErrorStop=> , 
+	GroupNotReady=> , 
+	GroupStandby=> , 
+	GroupStopping=> , 
+	GroupDisabled=> , 
+	AllAxesStanding=> , 
+	ConstantVelocity=> , 
+	Accelerating=> , 
+	Decelerating=> , 
+	InPosition=> , 
+	Error=> , 
+	ErrorId=> );
+	
+IF __ISVALIDREF(fbMovers) THEN
+	fbAddAxis2Group(
+		AxesGroup:= ag, 
+		Axis:= fbMovers[uiSelectedMover].p_Axis, 
+		Execute:= , 
+		IdentInGroup:= UDINT_TO_IDENTINGROUP(fbMovers[uiSelectedMover].udiID), 
+		Done=> , 
+		Busy=> , 
+		Error=> , 
+		ErrorId=> );
+END_IF
+	
+IF fbState.GroupDisabled THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateDisabled;
+ELSIF fbState.GroupErrorStop THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateErrorStop;
+ELSIF fbState.GroupHoming THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateHoming;
+ELSIF fbState.GroupMoving THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateMoving;
+ELSIF fbState.GroupNotReady THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateNotReady;
+ELSIF fbState.GroupStandby THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateStandby;
+ELSIF fbState.GroupStopping THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateStopping;
+ELSIF fbState.GroupStandby THEN
+	eGroupState := MC_GROUP_STATE.mcGroupStateSuspended;
+ELSE
+	eGroupState := MC_GROUP_STATE.mcGroupStateInvalid;
+END_IF
+bGroupError		 	:= eGroupState = mc_group_state.mcGroupStateErrorStop;
+bAllStandStill 		:= fbState.AllAxesStanding;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="disable" Id="{7ed6aefe-997e-4a60-9014-c0c3ac681d26}">
+      <Declaration><![CDATA[METHOD disable : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute : BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bInternalControl = FALSE THEN
+	fbDisable.Execute 	:= bExecute;
+	stStatus.bDone		:= fbDisable.Done;
+	stStatus.bBusy		:= fbDisable.Busy;
+	stStatus.bError		:= fbDisable.Error;
+	stStatus.udiErrorID	:= fbDisable.ErrorId;
+END_IF
+disable REF= stStatus;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="enable" Id="{68e53748-7c17-4773-81e7-db15626d6f4a}">
+      <Declaration><![CDATA[METHOD enable : REFERENCE TO stFeedback 
+VAR_INPUT
+	bEnable : BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bInternalControl = FALSE THEN
+	fbEnable.Execute 	:= bEnable;
+	stStatus.bDone		:= fbEnable.Done;
+	stStatus.bBusy		:= fbEnable.Busy;
+	stStatus.bError		:= fbEnable.Error;
+	stStatus.udiErrorID	:= fbEnable.ErrorId;
+END_IF
+enable REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="halt" Id="{370dfd46-8ee9-4be6-a974-a26aacf35016}">
+      <Declaration><![CDATA[METHOD halt : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute : BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bInternalControl = FALSE THEN
+	fbHalt.Execute 		:= bExecute;
+	stStatus.bDone		:= fbHalt.Done;
+	stStatus.bBusy		:= fbHalt.Busy;
+	stStatus.bError		:= fbHalt.Error;
+	stStatus.udiErrorID	:= fbHalt.ErrorId;
+END_IF
+halt REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="reset" Id="{d117629c-f8ec-4af1-aeb9-7b88477d6bb0}">
+      <Declaration><![CDATA[METHOD reset : REFERENCE TO stFeedback
+VAR_INPUT
+	bREset 		: BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bInternalControl = FALSE THEN
+	fbReset.Execute 	:= bREset;
+	stStatus.bDone		:= fbReset.Done;
+	stStatus.bBusy		:= fbReset.Busy;
+	stStatus.bError		:= fbReset.Error;
+	stStatus.udiErrorID	:= fbReset.ErrorId;
+END_IF
+reset REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ungroupall" Id="{c4d04756-20dc-4d04-9707-7855a191fb37}">
+      <Declaration><![CDATA[METHOD ungroupall : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute :BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bInternalControl = FALSE THEN
+	fbUnGroupAll.Execute 	:= bExecute;
+	stStatus.bDone			:= fbUnGroupAll.Done;
+	stStatus.bBusy			:= fbUnGroupAll.Busy;
+	stStatus.bError			:= fbUnGroupAll.Error;
+	stStatus.udiErrorID		:= fbUnGroupAll.ErrorId;
+END_IF
+ungroupall REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,660 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="FB_Mover" Id="{1aab077e-4cc1-4c98-9499-1e62a3dad5bc}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Mover EXTENDS FB_TcIoXtsXPUMover
+VAR_OUTPUT
+	udiID					: UDINT;
+	bMoverInverted			: BOOL;
+END_VAR
+VAR
+	ax						: AXIS_REF;
+	fbPower 				: MC_Power;
+	fbReset 				: MC_Reset;
+	fbHaltCA				: MC_HaltCA;
+	fbMoveAbsCA				: MC_MoveAbsoluteCA;
+	fbMoveRelCA				: MC_MoveRelativeCA;
+	fbMoveAbsTimeCA			: MC_MoveAbsoluteTimeCA;
+	fbMoveAbs				: MC_MoveAbsolute;
+	fbGearIn				: MC_GearIn;
+	fbGearOut				: MC_GearOut;
+	fbReadParamSet			: MC_ReadParameterSet := (Execute := TRUE);
+	fbAddAxis2Group 		: MC_AddAxisToGroup;
+	stParameter				: ST_AxisParameterSet;
+	fbJogCA					: MC_JOGCA;
+	fbJog					: MC_Jog;
+	bInternalControl		: BOOL;
+	lrTargetPos				: LREAL;
+	bTmp					: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+]]></ST>
+    </Implementation>
+    <Method Name="add2Group" Id="{1cd80238-7ce7-476e-b921-ac285ff68501}">
+      <Declaration><![CDATA[METHOD add2Group : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute	: BOOL;
+	ag		 	: AXES_GROUP_REF;
+END_VAR
+VAR_INST
+	stStatus	: stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbAddAxis2Group(
+	AxesGroup:= ag, 
+	Axis:= ax, 
+	Execute:= bExecute, 
+	IdentInGroup:= UDINT_TO_IDENTINGROUP(ax.NcToPlc.AxisId), 
+	Done=> stStatus.bDone, 
+	Busy=> stStatus.bBusy, 
+	Error=> stStatus.bError, 
+	ErrorId=> stStatus.udiErrorID);
+	
+add2Group REF= stStatus;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="clearCmd" Id="{52b21229-6666-44f2-89ed-d42b348ede86}">
+      <Declaration><![CDATA[METHOD clearCmd : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMoveAbsCA.Execute := FALSE;
+fbHaltCA.Execute := FALSE;
+fbGearIn.Execute := FALSE;
+fbReset.Execute	:= FALSE;
+fbMoveAbsTimeCA(Axis := ax, bExecute := FALSE);
+fbGearIn(master := ax, slave := ax, Execute := FALSE);
+fbGearOut(slave := ax, Execute := FALSE);
+InvertPolarity(FALSE, FALSE);	
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="cyclic" Id="{78f4bcf0-d098-4b78-966a-513db39e740a}">
+      <Declaration><![CDATA[METHOD cyclic : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ax.ReadStatus();
+
+fbPower(
+	Axis:= ax, 
+	Enable:= , 
+	Enable_Positive:= , 
+	Enable_Negative:= , 
+	Override:= , 
+	BufferMode:= , 
+	Options:= , 
+	Status=> , 
+	Busy=> , 
+	Active=> , 
+	Error=> , 
+	ErrorID=> );
+	
+fbReset(
+	Axis:= ax, 
+	Execute:= , 
+	Busy=> , 
+	Done=> ,
+	Error=> , 
+	ErrorID=> );
+	
+fbJog(
+	Axis:= ax, 
+	JogForward:= , 
+	JogBackwards:= , 
+	Mode:= , 
+	Position:= , 
+	Velocity:= , 
+	Acceleration:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Done=> , 
+	Busy=> , 
+	Active=> , 
+	CommandAborted=> , 
+	Error=> , 
+	ErrorID=> );
+
+fbJogCA(
+	Axis:= ax, 
+	JogForward:= , 
+	JogBackwards:= , 
+	Mode:= , 
+	Position:= , 
+	Velocity:= , 
+	Acceleration:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Done=> , 
+	Busy=> , 
+	Active=> , 
+	CommandAborted=> , 
+	Error=> , 
+	ErrorID=> );
+	
+fbMoveAbsCA(
+	Axis:= ax, 
+	Execute:= , 
+	ContinuousUpdate:= , 
+	Position:= , 
+	Velocity:= , 
+	Acceleration:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Gap:= , 
+	BufferMode:= , 
+	Direction:= , 
+	Options:= , 
+	Busy=> , 
+	Done=> ,
+	Error=> , 
+	ErrorID=> );
+	
+fbMoveAbsTimeCA(
+	Axis:= ax, 
+	bExecute:= , 
+	lrPosition:= , 
+	lrTime:= , 
+	Done=> , 
+	Busy=> , 
+	Active=> , 
+	CommandAborted=> , 
+	Error=> , 
+	ErrorId=> );
+	
+fbHaltCA(
+	Axis:= ax, 
+	Execute:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Options:= , 
+	Busy=> , 
+	Done=> ,
+	Error=> , 
+	ErrorID=> );
+
+fbMoveAbs(
+	Axis:= ax, 
+	Execute:= , 
+	Position:= , 
+	Velocity:= , 
+	Acceleration:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	BufferMode:= , 
+	Options:= , 
+	Busy=> , 
+	Done=> ,
+	Error=> , 
+	ErrorID=> );
+	
+fbMoveRelCA(
+	Axis:= ax, 
+	Execute:= , 
+	ContinuousUpdate:= , 
+	Distance:= , 
+	Velocity:= , 
+	Acceleration:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	Gap:= , 
+	BufferMode:= , 
+	Options:= , 
+	Busy=> , 
+	Done=> ,
+	Error=> , 
+	ErrorID=> );
+	
+fbGearOut(
+	Slave:= ax, 
+	Execute:= , 
+	Options:= , 
+	Done=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorID=> );
+
+fbReadParamSet(Parameter := stParameter, Axis := ax);
+udiID := stParameter.AxisId;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="gearIn" Id="{eb60ffea-b236-4b67-8b9f-04a683868c23}">
+      <Declaration><![CDATA[METHOD gearIn : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute 			: BOOL;
+	lrRatioNumerator 	: LREAL;
+	uiRatioDenominator	: UINT;
+END_VAR
+VAR_IN_OUT
+	axMaster	: AXIS_REF;	
+END_VAR
+VAR_INST
+	stStatus	: stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbGearIn.Execute 	:= bExecute;
+
+fbGearIn(
+	Master:= axMaster, 
+	Slave:= ax, 
+	Execute:= , 
+	RatioNumerator:= lrRatioNumerator, 
+	RatioDenominator:= uiRatioDenominator, 
+	Acceleration:= , 
+	Deceleration:= , 
+	Jerk:= , 
+	BufferMode:= , 
+	Options:= , 
+	InGear=> stStatus.bDone, 
+	Busy=> stStatus.bBusy, 
+	Active=> , 
+	CommandAborted=> stStatus.bCommandAborted, 
+	Error=> stStatus.bError, 
+	ErrorID=> stStatus.udiErrorID);
+	
+gearin REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="gearOut" Id="{37c52862-3bf3-4f3a-b3f6-3081d1d7d6d6}">
+      <Declaration><![CDATA[METHOD gearOut : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute 			: BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbGearOut.Execute 	:= bExecute;
+stStatus.bDone		:= fbGearOut.Done;
+stStatus.bBusy		:= fbGearOut.Busy;
+stStatus.bError		:= fbGearOut.Error;
+stStatus.udiErrorID	:= fbGearOut.ErrorID;
+
+gearout REF= stStatus;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="getmoveratpos" Id="{d926c30d-d05c-4420-9630-71c9464b03b9}">
+      <Declaration><![CDATA[METHOD getmoveratpos : BOOL
+VAR_INPUT
+	lrPosition : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ax.NcToPlc.ModuloSetPos > lrPosition-1 AND ax.NcToPlc.ModuloSetPos < lrPosition+1 THEN
+	getmoveratpos := TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="haltca" Id="{7b2f1233-4864-4896-a31d-954c8d1d8a6e}">
+      <Declaration><![CDATA[METHOD haltca : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute : BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbHaltCA.Execute 	:= bExecute;
+fbHaltCA.Gap		:= MC_DEFAULT;
+stStatus.bDone		:= fbHaltCA.Done;
+stStatus.bBusy		:= fbHaltCA.Busy;
+stStatus.bError		:= fbHaltCA.Error;
+stStatus.udiErrorID	:= fbHaltCA.ErrorID;
+
+haltca REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="InvertPolarity" Id="{c99e1dcc-4b4b-4d54-9470-f1075bcc3725}">
+      <Declaration><![CDATA[METHOD InvertPolarity : BOOL
+VAR_INPUT
+	bExecute : BOOL;
+	bValue	 : BOOL;
+END_VAR
+VAR_INST
+	iState 		: INT;
+	fbWrite 	: MC_WriteParameterPersistent;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+CASE iState OF 
+	0 : IF bExecute THEN 
+			fbWrite(Axis := ax, Execute := FALSE);
+			iState := iState + 1; 
+		END_IF
+	1 :  
+		fbWrite(
+			Axis:= ax, 
+			Execute:= TRUE, 
+			ParameterNumber:= MC_AxisParameter.AxisMotorDirectionInverse, 
+			Value:= BOOL_TO_LREAL(bValue), 
+			Done=> , 
+			Busy=> , 
+			Error=> , 
+			ErrorID=> );
+		IF fbWrite.Done THEN
+			fbWrite(Axis := ax, Execute := FALSE);
+			iState := iState + 1;
+		END_IF
+		IF fbWrite.Error THEN
+			iState := 999;
+		END_IF
+		
+	2 : 
+		fbWrite(
+			Axis:= ax, 
+			Execute:= TRUE, 
+			ParameterNumber:= MC_AxisParameter.AxisEncoderDirectionInverse, 
+			Value:= BOOL_TO_LREAL(bValue), 
+			Done=> , 
+			Busy=> , 
+			Error=> , 
+			ErrorID=> );
+		IF fbWrite.Done THEN
+			fbWrite(Axis := ax, Execute := FALSE);
+			iState := iState + 1;
+		END_IF
+		IF fbWrite.Error THEN
+			iState := 999;
+		END_IF
+		
+	3 : //Job Done
+		InvertPolarity := TRUE;
+		bMoverInverted := bValue;
+		IF bExecute = FALSE THEN
+			iState := 0;
+		END_IF
+		
+	999 : //Error
+		iState := 0;
+		
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="jogca" Id="{c1a6f6ed-796b-493c-8437-bf8f7b778ef5}">
+      <Declaration><![CDATA[METHOD jogca : REFERENCE TO stFeedback
+VAR_INPUT
+	bJogBackwards	: BOOL;
+	bJogForward		: BOOL;
+END_VAR
+VAR_INST
+	stStatus		: stFeedback;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbJogCA.JogBackwards			:= bJogBackwards;
+fbJogCA.JogForward				:= bJogForward;
+
+stStatus.bDone					:= fbJogCA.Done;
+stStatus.bBusy					:= fbJogCA.Busy;
+stStatus.bCommandAborted		:= fbJogCA.CommandAborted;
+stStatus.bError					:= fbJogCA.Error;
+stStatus.udiErrorID				:= fbJogCA.ErrorID;
+
+jogca REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="jogca_velo" Id="{dba4b851-3601-4f6d-9776-30851422662e}">
+      <Declaration><![CDATA[METHOD jogca_velo : REFERENCE TO stFeedback
+VAR_INPUT
+	bJogBackwards	: BOOL;
+	bJogForward		: BOOL;
+	lrVelocity		: LREAL;
+END_VAR
+VAR_INST
+	stStatus		: stFeedback;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbJogCA.JogBackwards			:= bJogBackwards;
+fbJogCA.JogForward				:= bJogForward;
+fbJogCA.Mode					:= E_JogMode.MC_JOGMODE_CONTINOUS;
+fbJogCA.Velocity				:= lrVelocity;
+
+stStatus.bDone					:= fbJogCA.Done;
+stStatus.bBusy					:= fbJogCA.Busy;
+stStatus.bCommandAborted		:= fbJogCA.CommandAborted;
+stStatus.bError					:= fbJogCA.Error;
+stStatus.udiErrorID				:= fbJogCA.ErrorID;
+
+jogca_velo REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="moveca" Id="{26bf8074-949c-43ce-b4ae-c9bf47db1841}">
+      <Declaration><![CDATA[METHOD moveca : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute	: BOOL;
+	lrPosition 	: LREAL;
+	lrVelocity	: LREAL;
+END_VAR
+VAR_INST
+	stStatus 	: stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMoveAbsCA.Position 			:= lrPosition;
+fbMoveAbsCA.Velocity			:= lrVelocity;
+fbMoveAbsCA.Acceleration		:= stParameter.fAcceleration; 
+fbMoveAbsCA.Deceleration		:= stParameter.fDeceleration; 
+fbMoveAbsCA.Jerk				:= stParameter.fJerk; 
+fbMoveAbsCA.Direction			:= tc3_mc3definitions.mcDirectionPositive;
+fbMoveAbsCA.ContinuousUpdate 	:= TRUE;
+fbMoveAbsCA.Execute				:= bExecute;
+fbMoveAbsCA.Gap					:= MC_DEFAULT;
+lrTargetPos 					:= lrPosition;
+
+stStatus.bDone					:= fbMoveAbsCA.Done;
+stStatus.bBusy					:= fbMoveAbsCA.Busy;
+stStatus.bCommandAborted		:= fbMoveAbsCA.CommandAborted;
+stStatus.bError					:= fbMoveAbsCA.Error;
+stStatus.udiErrorID				:= fbMoveAbsCA.ErrorID;
+
+moveca REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="moveca_bytime" Id="{a6d6ec43-1d3e-493d-be8b-cdfb8d5c5e8d}">
+      <Declaration><![CDATA[METHOD moveca_bytime : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute	: bool;
+	lrPosition 	: LREAL;
+	lrTime		: LREAL;
+END_VAR
+VAR_INST
+	stStatus	: stFeedback;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMoveAbsTimeCA.bExecute 		:= bExecute;
+fbMoveAbsTimeCA.lrPosition 		:= lrPosition;
+fbMoveAbsTimeCA.lrTime			:= lrTime;
+lrTargetPos 					:= lrPosition;
+
+stStatus.bDone					:= fbMoveAbsTimeCA.Done;
+stStatus.bBusy					:= fbMoveAbsTimeCA.Busy;
+stStatus.bCommandAborted		:= fbMoveAbsTimeCA.CommandAborted;
+stStatus.bError					:= fbMoveAbsTimeCA.Error;
+stStatus.udiErrorID				:= fbMoveAbsTimeCA.ErrorID;
+
+moveca_bytime REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="moveca_direction" Id="{15730622-1d32-4446-9e69-930c706c010a}">
+      <Declaration><![CDATA[METHOD moveca_direction : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute	: BOOL;
+	lrPosition 	: LREAL;
+	lrVelocity	: LREAL;
+	Direction	: tc3_mc3definitions.MC_DIRECTION;
+END_VAR
+VAR_INST
+	stStatus	: stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMoveAbsCA.Position 			:= lrPosition;
+fbMoveAbsCA.Velocity			:= lrVelocity;
+fbMoveAbsCA.Acceleration		:= stParameter.fAcceleration; 
+fbMoveAbsCA.Deceleration		:= stParameter.fDeceleration; 
+fbMoveAbsCA.Jerk				:= stParameter.fJerk; 
+fbMoveAbsCA.Direction			:= Direction;
+fbMoveAbsCA.ContinuousUpdate 	:= TRUE;
+fbMoveAbsCA.Execute				:= bExecute;
+fbMoveAbsCA.Gap					:= MC_DEFAULT;
+lrTargetPos 					:= lrPosition;
+
+stStatus.bDone					:= fbMoveAbsCA.Done;
+stStatus.bBusy					:= fbMoveAbsCA.Busy;
+stStatus.bCommandAborted		:= fbMoveAbsCA.CommandAborted;
+stStatus.bError					:= fbMoveAbsCA.Error;
+stStatus.udiErrorID				:= fbMoveAbsCA.ErrorID;
+
+moveca_direction REF= stStatus;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="moveca_gap" Id="{d704d74c-af17-4556-8cfc-79a8de0aa4b3}">
+      <Declaration><![CDATA[METHOD moveca_gap : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute	: BOOL;
+	lrPosition 	: LREAL;
+	lrVelocity	: LREAL;
+	lrGap		: LREAL;
+END_VAR
+VAR_INST
+	stStatus	: stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMoveAbsCA.Position 			:= lrPosition;
+fbMoveAbsCA.Velocity			:= lrVelocity;
+fbMoveAbsCA.Acceleration		:= stParameter.fAcceleration; 
+fbMoveAbsCA.Deceleration		:= stParameter.fDeceleration; 
+fbMoveAbsCA.Jerk				:= stParameter.fJerk; 
+fbMoveAbsCA.Direction			:= tc3_mc3definitions.mcDirectionPositive;
+fbMoveAbsCA.ContinuousUpdate 	:= TRUE;
+fbMoveAbsCA.Execute				:= bExecute;
+fbMoveAbsCA.Gap					:= lrGap;
+lrTargetPos 					:= lrPosition;
+
+stStatus.bDone					:= fbMoveAbsCA.Done;
+stStatus.bBusy					:= fbMoveAbsCA.Busy;
+stStatus.bCommandAborted		:= fbMoveAbsCA.CommandAborted;
+stStatus.bError					:= fbMoveAbsCA.Error;
+stStatus.udiErrorID				:= fbMoveAbsCA.ErrorID;
+
+moveca_gap REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="p_Axis" Id="{bffaf1f7-2c4f-4e93-8acc-bf2a5affd02c}">
+      <Declaration><![CDATA[PROPERTY p_Axis : reference to AXIS_REF]]></Declaration>
+      <Get Name="Get" Id="{051a7e37-5540-4bdd-8704-39ad6248dc55}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[p_Axis ref= ax;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{6fe09b21-b6bd-4b40-bc03-8933b055e70d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ax := p_Axis;
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="p_ModulePos" Id="{db67240c-5e02-4111-a3fa-99184e791147}">
+      <Declaration><![CDATA[PROPERTY p_ModulePos : lreal
+]]></Declaration>
+      <Get Name="Get" Id="{db8bd786-c2b0-4237-9925-b7ca081e2209}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[p_ModulePos := ax.NcToPlc.ModuloActPos;
+
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="power_off" Id="{dd216d82-768a-4467-b3af-0290f0de6287}">
+      <Declaration><![CDATA[METHOD power_off : REFERENCE TO stFeedback
+VAR_INST
+	stStatus : stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbPower.Enable 			:= FALSE;
+fbPower.Enable_Positive := FALSE;
+fbPower.Enable_Negative := FALSE;
+stStatus.bDone			:= NOT fbPower.Status;
+stStatus.bBusy			:= fbPower.Busy;
+stStatus.bError			:= fbPower.Error;
+stStatus.udiErrorID		:= fbPower.ErrorID;
+power_off 				REF= stStatus;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="power_on" Id="{59999de6-a574-4559-8e80-2cfda5489c98}">
+      <Declaration><![CDATA[METHOD power_on : REFERENCE TO stFeedback
+VAR_INST
+	stStatus : stFeedback;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbPower.Enable 			:= TRUE;
+fbPower.Enable_Positive := TRUE;
+fbPower.Enable_Negative := TRUE;
+stStatus.bDone			:= fbPower.Status;
+stStatus.bBusy			:= fbPower.Busy;
+stStatus.bError			:= fbPower.Error;
+stStatus.udiErrorID		:= fbPower.ErrorID;
+power_on 				REF= stStatus;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="reset" Id="{874a5cb4-c249-4e17-8321-3c7e478032a8}">
+      <Declaration><![CDATA[METHOD reset : REFERENCE TO stFeedback
+VAR_INPUT
+	bExecute : BOOL;
+END_VAR
+VAR_INST
+	stStatus : stFeedback;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbReset.Execute			:= bExecute;
+stStatus.bBusy			:= fbReset.Busy;
+stStatus.bDone			:= fbReset.Done;
+stStatus.bError			:= fbReset.Error;
+stStatus.udiErrorID		:= fbReset.ErrorID;
+reset REF= stStatus;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="standstill" Id="{008adc15-4883-4f53-befa-8735f3ab6c0f}">
+      <Declaration><![CDATA[METHOD standstill : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[standstill := ax.NcToPlc.SetVelo=0;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

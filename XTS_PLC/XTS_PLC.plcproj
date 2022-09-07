@@ -21,6 +21,9 @@
     <Compile Include="DUTs\eColors.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\stFeedback.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\stStationCfg.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -39,83 +42,99 @@
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\XTS FBs\FB_MoversFIFO.TcPOU">
+    <Compile Include="POUs\XTS\Group CA\FB_GroupCA.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\XTS FBs\FB_GroupCA.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\FB_Mover.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\FB_Station.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\I_StationInteraction.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\MC_JogCA.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\MC_MoveAbsoluteTimeCA.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\GlobalTextList_2.TcGTLO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\TextList\AxisState_txt.TcTLO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\TextList\GroupState_txt.TcTLO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\TextList\MoverMode_TXT.TcTLO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\TextList\MoversMode_txt.TcTLO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\TextList\PML_Modes_txt.TcTLO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\TextList\StationAckMode_txt.TcTLO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSManualVisu.TcVIS">
+    <Compile Include="POUs\XTS\Group CA\VI_GroupCAVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSMainVisu.TcVIS">
+    <Compile Include="POUs\XTS\Movers\FB_Mover.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\Movers\FB_MoversFIFO.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\Movers\MC_JogCA.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\Movers\MC_MoveAbsoluteTimeCA.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\Movers\VI_MoverVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSRunTimeVisu.TcVIS">
+    <Compile Include="POUs\XTS\Movers\VI_MoversVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSStationsConfigurationVisu.TcVIS">
+    <Compile Include="POUs\XTS\Stations\FB_Station.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\Stations\VI_StationVISU.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSMoversConfigurationVisu.TcVIS">
+    <Compile Include="POUs\XTS\Stations\VI_StationsVISU.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSConfigurationVisu.TcVIS">
+    <Compile Include="POUs\XTS\VISUs\GlobalTextList_2.TcGTLO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\TextList\AxisState_txt.TcTLO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\TextList\GroupState_txt.TcTLO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\TextList\MoverMode_TXT.TcTLO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\TextList\MoversMode_txt.TcTLO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\TextList\PML_Modes_txt.TcTLO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\TextList\StationAckMode_txt.TcTLO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\VI_PLCOpenState.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\VISUs\VI_XTSAutoVisu.TcVIS">
+    <Compile Include="POUs\XTS\VISUs\VI_XTSManualVisu.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="POUs\XTS FBs\XTS_System.TcPOU">
+    <Compile Include="POUs\XTS\VISUs\VI_XTSMainVisu.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\VI_XTSRunTimeVisu.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\VI_XTSConfigurationVisu.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="POUs\XTS\VISUs\VI_XTSAutoVisu.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>VisualizationManager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="POUs\XTS\XTS_System.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\XTS_PRG.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="VisualizationManager.TcVMO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VISUs\ImagePool.TcIPO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="VISUs\MAIN_VISU.TcVIS">
@@ -126,12 +145,19 @@
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="POUs" />
-    <Folder Include="POUs\XTS FBs" />
-    <Folder Include="POUs\XTS FBs\VISUs" />
-    <Folder Include="POUs\XTS FBs\VISUs\TextList" />
+    <Folder Include="POUs\XTS" />
+    <Folder Include="POUs\XTS\Group CA" />
+    <Folder Include="POUs\XTS\Movers" />
+    <Folder Include="POUs\XTS\Stations" />
+    <Folder Include="POUs\XTS\VISUs" />
+    <Folder Include="POUs\XTS\VISUs\TextList" />
     <Folder Include="VISUs" />
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderReference Include="CmpBitmapPool">
+      <DefaultResolution>CmpBitmapPool, * (System)</DefaultResolution>
+      <Namespace>CmpBitmapPool</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="System_VisuElemEventTable">
       <DefaultResolution>VisuElemEventTable, 1.0.3.0 (System)</DefaultResolution>
       <Namespace>VisuElemEventTable</Namespace>
